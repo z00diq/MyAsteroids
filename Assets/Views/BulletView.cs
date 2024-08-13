@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.Views
 {
-    public class BulletView : View, IEnnemyInteractable
+    public class BulletView : EnemyView, IEnnemyInteractable
     {
         private Bullet _model;
 

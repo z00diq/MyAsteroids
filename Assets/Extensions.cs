@@ -5,7 +5,7 @@ namespace Assets
 {
     public static class Extensions
     {
-        public static bool IsPositionTooFar(Vector3 position, View view, float tooFarDistance=10f)
+        public static bool IsPositionTooFar(Vector3 position, EnemyView view, float tooFarDistance=10f)
         {
             if (position.x + view.ModelSize.x  > Game.Instance.ScreenBounds.x + tooFarDistance ||
                 position.x - view.ModelSize.x  < -Game.Instance.ScreenBounds.x - tooFarDistance)
@@ -18,7 +18,7 @@ namespace Assets
             return false;
         }
 
-        public static Vector3 CalculatePositionOutsideBounds(float outBoundsDepth, View view)
+        public static Vector3 CalculatePositionOutsideBounds(float outBoundsDepth, EnemyView view)
         {
             Vector3 newPosition = Vector3.one;
         

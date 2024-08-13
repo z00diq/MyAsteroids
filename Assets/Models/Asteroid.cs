@@ -34,13 +34,7 @@ namespace Assets.Models
             MoveVector = direction * Speed;
         }
 
-        protected override void Move()
-        {
-            base.Move();
-
-            if (Extensions.IsPositionTooFar(Position, View, TooFarDistance))
-                OutFromBounds?.Invoke(this);
-        }
+        
 
         private void Explose()
         {
@@ -48,13 +42,19 @@ namespace Assets.Models
 
             for (int i = 0; i < pieceCount; i++)
             {
-                View miniAsteroidView = AsteroidView.Instantiate(View, ViewGameObject.transform.position, Quaternion.identity);
+                EnemyView miniAsteroidView = AsteroidView.Instantiate(View, ViewGameObject.transform.position, Quaternion.identity);
                 miniAsteroidView.transform.localScale = View.transform.localScale * 0.3f;
                 
                 BaseEnemy miniAsteroid = new BaseEnemy(MaxSpeed, MaxSpeed * 1.5f,TooFarDistance);
                 miniAsteroid.Initialize(miniAsteroidView);
                 Game.Instance.AddToUpdatable(miniAsteroid);
             }
+        }
+
+        protected override void TrySendCallback()
+        {
+            if (Extensions.IsPositionTooFar(Position, View, TooFarDistance))
+                OutFromBounds?.Invoke(this);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Assets.Models
         protected float MinSpeed;
         protected float MaxSpeed;
         protected float TooFarDistance;
-        protected View View;
+        protected EnemyView View;
         
         public BaseEnemy(float minSpeed, float maxSpeed, float tooFarDistance) 
         {
@@ -24,12 +24,14 @@ namespace Assets.Models
 
         public event Action<Vector3> Moved;
         public event Action Died;
+        public event Action EnableGameObject;
+        public event Action DisableGameObject;
 
         public GameObject ViewGameObject => View.gameObject;
 
-        public void Initialize(View view)
+        public void Initialize(EnemyView view)
         {
-            view.Initialize();
+            view.Initialize(this);
             View = view;
             View.TriggerDetected += TriggerDetected;
             Position = view.transform.position;
@@ -41,14 +43,24 @@ namespace Assets.Models
             Move();
         }
 
-        public virtual void SetPosition(Vector3 position)
+        public void Enable()
         {
-            Moved?.Invoke(Position);
+            EnableGameObject?.Invoke();
+        }
+
+        public void Disable()
+        {
+            DisableGameObject?.Invoke();
         }
 
         public override void Destroy()
         {
             Died?.Invoke();
+        }
+
+        public virtual void SetPosition(Vector3 position)
+        {
+            Moved?.Invoke(Position);
         }
 
         protected virtual void CalculateMoveSettings()
@@ -61,6 +73,18 @@ namespace Assets.Models
             MoveVector = direction * Speed;
         }
 
+        protected virtual void TrySendCallback()
+        {
+            if(Extensions.IsPositionTooFar(Position, View, TooFarDistance))
+                Died?.Invoke();
+        }
+
+        protected virtual void CalculateDeltaMove()
+        {
+            Vector3 deltaMoveVector = MoveVector * Time.deltaTime;
+            Position += deltaMoveVector;
+        }
+
         private void TriggerDetected(Collider collider)
         {
             if (collider.TryGetComponent(out IEnnemyInteractable interactable) == false)
@@ -70,14 +94,11 @@ namespace Assets.Models
 
         }
 
-        protected virtual void Move()
+        private void Move()
         {
-            Vector3 deltaMoveVector = MoveVector * Time.deltaTime;
-            Position += deltaMoveVector;
+            CalculateDeltaMove();
             Moved?.Invoke(Position);
-
-            if (Extensions.IsPositionTooFar(Position, View, TooFarDistance))
-                Died?.Invoke();
+            TrySendCallback();
         }
     }
 }

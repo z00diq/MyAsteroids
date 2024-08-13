@@ -1,6 +1,6 @@
 ﻿namespace Assets.Models
 {
-    public class LaserView : View, IEnnemyInteractable
+    public class LaserView : EnemyView, IEnnemyInteractable
     {
         private Laser _model;
 

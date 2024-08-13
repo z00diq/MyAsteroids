@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Assets.Views
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class ShipView : View, IEnnemyInteractable
+    public class ShipView : EnemyView, IEnnemyInteractable
     {
         [SerializeField] private Transform _bulletSpawn;
 

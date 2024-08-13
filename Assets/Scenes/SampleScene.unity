@@ -341,11 +341,12 @@ MonoBehaviour:
   _deltaSpeed: 1.5
   _rotationSpeed: 75
   _bulletPrefab: {fileID: 2859312198483025152, guid: cded078cf80754f4482fb1e3cfed1cd6, type: 3}
+  _laserPrefab: {fileID: 8634360429072778552, guid: 95eebf3d7ba756847b469f8b93cc769b, type: 3}
   _laserFireCount: 3
-  _laserReloadTime: 5
-  _laserLifeTime: 3
+  _laserReloadTime: 10
+  _laserLifeTime: 2
   _bulletSpeed: 15
-  _bulletReloadTime: 1
+  _bulletReloadTime: 2
 --- !u!4 &1279675302
 Transform:
   m_ObjectHideFlags: 0

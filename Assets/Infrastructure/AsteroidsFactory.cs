@@ -57,7 +57,7 @@ namespace Assets.Infrastructure
 
         private void OnTakeFromPool(Asteroid asteroid)
         {
-            asteroid.ViewGameObject.SetActive(true);
+            asteroid.Enable();
             Game.Instance.AddToUpdatable(asteroid);
         }
 
@@ -67,7 +67,7 @@ namespace Assets.Infrastructure
             Vector3 newPosition = Extensions.CalculatePositionOutsideBounds(_outBoundsDepth, _prefab);
             asteroid.SetPosition(newPosition);
             Game.Instance.RemoveFromUpdatable(asteroid);
-            asteroid.ViewGameObject.SetActive(false);
+            asteroid.Disable();
         }
 
         private void OnDestroyAsteroid(Asteroid asteroid)
