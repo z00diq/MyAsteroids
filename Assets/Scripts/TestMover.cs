@@ -12,7 +12,6 @@ public class TestMover : MonoBehaviour
     private const string Horizontal = nameof(Horizontal);
 
     private Rigidbody _rigidbody;
-    private Vector3 _acelleration;
     private Vector3 _currentSpeed;
 
     private float _rotationDirection;

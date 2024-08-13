@@ -5,7 +5,7 @@ namespace Assets
 {
     public static class Extensions
     {
-        public static bool IsPositionTooFar(Vector3 position, View view, float tooFarDistance)
+        public static bool IsPositionTooFar(Vector3 position, View view, float tooFarDistance=10f)
         {
             if (position.x + view.ModelSize.x  > Game.Instance.ScreenBounds.x + tooFarDistance ||
                 position.x - view.ModelSize.x  < -Game.Instance.ScreenBounds.x - tooFarDistance)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +8,23 @@ using UnityEngine;
 
 namespace Assets.Views
 {
-    public class ShipView : MonoBehaviour, IInteractable
+    [RequireComponent(typeof(Rigidbody))]
+    public class ShipView : View, IEnnemyInteractable
     {
-        public void Do()
+        [SerializeField] private Transform _bulletSpawn;
+
+        private Ship _model;
+        
+        public Vector3 FirePosition => _bulletSpawn.position;
+        public Rigidbody RigidBody { get; private set;}
+
+        public void Initilize(Ship ship)
+        {
+            _model = ship;
+            RigidBody = GetComponent<Rigidbody>();
+        }
+
+        public void Impact(Destroyable enemy)
         {
             Debug.Log("Im explose");
         }

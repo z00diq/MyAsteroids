@@ -330,12 +330,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7309dd241b89d774cbe949d711be1f45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 119147805886447572, guid: 79c24bc61f3c42f4b9a93266d9911aa3, type: 3}
+  _asteroidPrefab: {fileID: 119147805886447572, guid: 79c24bc61f3c42f4b9a93266d9911aa3, type: 3}
   _maxCount: 10
   _minSpeed: 2
   _maxSpeed: 5
   _occurrenceFrequency: 1
   _outBoundsDepth: 10
+  _shipPrefab: {fileID: -7380424836436983607, guid: 77f33ccc808c5534c8461044bdec2b24, type: 3}
+  _maxShipSpeed: 7
+  _deltaSpeed: 1.5
+  _rotationSpeed: 75
+  _bulletPrefab: {fileID: 2859312198483025152, guid: cded078cf80754f4482fb1e3cfed1cd6, type: 3}
+  _laserFireCount: 3
+  _laserReloadTime: 5
+  _laserLifeTime: 3
+  _bulletSpeed: 15
+  _bulletReloadTime: 1
 --- !u!4 &1279675302
 Transform:
   m_ObjectHideFlags: 0

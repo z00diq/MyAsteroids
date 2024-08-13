@@ -5,74 +5,56 @@ using Random = UnityEngine.Random;
 
 namespace Assets.Models
 {
-    public class Asteroid: IUpdatable
+    public class Asteroid: BaseEnemy
     {
-        private AsteroidView _view;
-        private Vector3 _position;
-        private Vector3 _moveVector;
-        private float _minSpeed;
-        private float _maxSpeed;
-        private float _speed;
-        private float _tooFarDistance;
-
-        public event Action<Vector3> Moved;
         public event Action<Asteroid> OutFromBounds;
-        
-        public GameObject ViewGameObject => _view.gameObject;
 
-        public Asteroid(float minSpeed, float maxSpeed, float tooFarDistance) 
+        public Asteroid(float minSpeed, float maxSpeed, float tooFarDistance) : base(minSpeed, maxSpeed, tooFarDistance)
         {
-            _minSpeed = minSpeed;
-            _maxSpeed = maxSpeed;
-            _tooFarDistance = tooFarDistance;
         }
 
-        public void Initialize(AsteroidView view)
+        public override void SetPosition(Vector3 position)
         {
-            view.Initialize(this);
-            _view = view;
-            _view.TriggerDetected += TriggerDetected;
-            _position = view.transform.position;
+            Position = position;
             CalculateMoveSettings();
+            base.SetPosition(position);
         }
 
-        public void Update()
+        public new void Destroy()
         {
-            Move();
+            Explose();
+            base.Destroy();
         }
 
-        public void SetPosition(Vector3 position)
+        protected override void CalculateMoveSettings()
         {
-            _position = position;
-            CalculateMoveSettings();
-            Moved?.Invoke(_position);
+            Vector3 target = new Vector3(Game.Instance.ScreenBounds.x / 2, Game.Instance.ScreenBounds.y / 2);
+            Vector3 direction = (target - Position).normalized;
+            Speed = Random.Range(MinSpeed, MaxSpeed);
+            MoveVector = direction * Speed;
         }
 
-        private void Move()
+        protected override void Move()
         {
-            Vector3 deltaMoveVector =_moveVector * Time.deltaTime;
-            _position += deltaMoveVector;
-            Moved?.Invoke(_position);
+            base.Move();
 
-            if (Extensions.IsPositionTooFar(_position, _view,_tooFarDistance))
+            if (Extensions.IsPositionTooFar(Position, View, TooFarDistance))
                 OutFromBounds?.Invoke(this);
         }
 
-        private void CalculateMoveSettings()
+        private void Explose()
         {
-            Vector3 target = new Vector3(Game.Instance.ScreenBounds.x / 2, Game.Instance.ScreenBounds.y / 2);
-            Vector3 direction = (target - _position).normalized;
-            float speed = Random.Range(_minSpeed, _maxSpeed);
-            _moveVector = direction * speed;
-        }
+            int pieceCount = Random.Range(1, 6);
 
-        private void TriggerDetected(Collider collider)
-        {
-            if (collider.TryGetComponent(out IInteractable interactable) == false)
-                return;
-
-            interactable.Do();
-
+            for (int i = 0; i < pieceCount; i++)
+            {
+                View miniAsteroidView = AsteroidView.Instantiate(View, ViewGameObject.transform.position, Quaternion.identity);
+                miniAsteroidView.transform.localScale = View.transform.localScale * 0.3f;
+                
+                BaseEnemy miniAsteroid = new BaseEnemy(MaxSpeed, MaxSpeed * 1.5f,TooFarDistance);
+                miniAsteroid.Initialize(miniAsteroidView);
+                Game.Instance.AddToUpdatable(miniAsteroid);
+            }
         }
     }
 }

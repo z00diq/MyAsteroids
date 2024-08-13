@@ -29,19 +29,8 @@ namespace Assets.Infrastructure
 
         public void Initialize()
         {
-            _asteroids = new ObjectPool<Asteroid>(Create,OnTakeFromPool,OnReturnedToPool,
+            _asteroids = new ObjectPool<Asteroid>(CreateAsteroid,OnTakeFromPool,OnReturnedToPool,
                 OnDestroyAsteroid, true,_maxCount,_maxCount);
-        }
-
-        public Asteroid Create()
-        {
-           
-            Vector3 spawnPosition = Extensions.CalculatePositionOutsideBounds(_outBoundsDepth, _prefab);
-            Asteroid asteroid = new Asteroid(_minSpeed,_maxSpeed,_outBoundsDepth*1.5f);
-            AsteroidView asteroidView = AsteroidView.Instantiate(_prefab, spawnPosition,Quaternion.identity,Game.Instance.gameObject.transform);
-            asteroid.Initialize(asteroidView);
-            asteroid.OutFromBounds += _asteroids.Release;
-            return asteroid;
         }
 
         public void Update()
@@ -55,12 +44,22 @@ namespace Assets.Infrastructure
             }
         }
 
+        private Asteroid CreateAsteroid()
+        {
+            Vector3 spawnPosition = Extensions.CalculatePositionOutsideBounds(_outBoundsDepth, _prefab);
+            Asteroid asteroid = new Asteroid(_minSpeed, _maxSpeed, _outBoundsDepth * 1.5f);
+            AsteroidView asteroidView = AsteroidView.Instantiate(_prefab, spawnPosition, Quaternion.identity, Game.Instance.gameObject.transform);
+            asteroid.Initialize(asteroidView);
+            asteroid.OutFromBounds += _asteroids.Release;
+            asteroid.Died += _asteroids.Dispose;
+            return asteroid;
+        }
+
         private void OnTakeFromPool(Asteroid asteroid)
         {
             asteroid.ViewGameObject.SetActive(true);
             Game.Instance.AddToUpdatable(asteroid);
         }
-
 
         private void OnReturnedToPool(Asteroid asteroid)
         {
@@ -73,7 +72,9 @@ namespace Assets.Infrastructure
 
         private void OnDestroyAsteroid(Asteroid asteroid)
         {
+            Game.Instance.RemoveFromUpdatable(asteroid);
             asteroid.OutFromBounds-=_asteroids.Release;
+            asteroid.Died-=_asteroids.Dispose;
         }
     }
 }

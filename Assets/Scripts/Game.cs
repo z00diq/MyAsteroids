@@ -1,5 +1,6 @@
 ﻿using Assets.Infrastructure;
 using Assets.Models;
+using Assets.Views;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,18 +13,35 @@ namespace Assets.Scripts
         public static Game Instance => _instance;
 
         [Header("Asteroid Settings")]
-        [SerializeField] private AsteroidView _prefab;
+        [SerializeField] private AsteroidView _asteroidPrefab;
         [SerializeField] private int _maxCount;
         [SerializeField] private float _minSpeed;
         [SerializeField] private float _maxSpeed;
         [SerializeField] private float _occurrenceFrequency;
         [SerializeField] private float _outBoundsDepth;
-        
+
+        [Header("Ship Settings")]
+        [SerializeField] private ShipView _shipPrefab;
+        [SerializeField] private float _maxShipSpeed;
+        [SerializeField] private float _deltaSpeed;
+        [SerializeField] private float _rotationSpeed;
+
+        [Header("Ship Fire Settings")]
+        [SerializeField] private BulletView _bulletPrefab;
+        [SerializeField] private LaserView _laserPrefab;
+        [SerializeField] private int _laserFireCount;
+        [SerializeField] private float _laserReloadTime;
+        [SerializeField] private float _laserLifeTime;
+        [SerializeField] private float _bulletSpeed;
+        [SerializeField] private float _bulletReloadTime;
+
         private List<IStartable> _startable = new List<IStartable>();
         private List<IUpdatable> _updatable = new List<IUpdatable>();
+        private List<IFixedUpdatable> _fixedUpdatable = new List<IFixedUpdatable>();
+
+        private InputSystem _inputSystem;
 
         public Vector2 ScreenBounds { get; private set; }
-
 
         public void AddToStarable(IStartable startable)
         {
@@ -35,19 +53,33 @@ namespace Assets.Scripts
             _updatable.Add(updatable);
         }
 
-        public void RemoveFromUpdatable(Asteroid asteroid)
+        public void RemoveFromUpdatable(IUpdatable updatable)
         {
-            _updatable.Remove(asteroid);
+            _updatable.Remove(updatable);
+        }
+
+        private void CreateShip()
+        {
+            ShipView shipView = Instantiate(_shipPrefab, new Vector3(ScreenBounds.x / 2, ScreenBounds.y / 2), Quaternion.identity, transform);
+            ShipFire shipFire = new ShipFire(shipView, _bulletPrefab, _laserPrefab,_laserFireCount, _laserReloadTime, _laserLifeTime, _bulletSpeed, _bulletReloadTime);
+            Ship ship = new Ship(_maxShipSpeed, _deltaSpeed, _rotationSpeed,_inputSystem,shipFire);
+            ship.Initilize(shipView);
+
+            _updatable.Add(shipFire);
+            _fixedUpdatable.Add(ship);
         }
 
         private void Awake()
         {
             _instance = FindObjectOfType<Game>();
+            _inputSystem = new InputSystem();
             ScreenBounds = new Vector2(Camera.main.aspect * Camera.main.orthographicSize, Camera.main.orthographicSize);
+            CreateShip();
             AsteroidsFactory asteroidsFactory = new AsteroidsFactory(_maxCount, _minSpeed, _maxSpeed,
-                _prefab, _occurrenceFrequency, _outBoundsDepth);
+                _asteroidPrefab, _occurrenceFrequency, _outBoundsDepth);
             asteroidsFactory.Initialize();
 
+            _updatable.Add(_inputSystem);
             _updatable.Add(asteroidsFactory);
         }
 
@@ -64,6 +96,14 @@ namespace Assets.Scripts
             for (int i = 0; i < _updatable.Count; i++)
             {
                 _updatable[i].Update();
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            for (int i = 0; i < _fixedUpdatable.Count; i++)
+            {
+                _fixedUpdatable[i].FixedUpdate();
             }
         }
     }
