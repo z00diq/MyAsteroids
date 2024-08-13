@@ -332,10 +332,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _asteroidPrefab: {fileID: 119147805886447572, guid: 79c24bc61f3c42f4b9a93266d9911aa3, type: 3}
   _maxCount: 10
-  _minSpeed: 2
-  _maxSpeed: 5
+  _minSpeed: 1
+  _maxSpeed: 2
   _occurrenceFrequency: 1
   _outBoundsDepth: 10
+  _ufoPrefab: {fileID: 4666242290698186375, guid: 25294646f6dd8894a958731d66e34f1a, type: 3}
+  _maxUFOCount: 3
+  _minUFOSpeed: 3
+  _maxUFOSpeed: 5
+  _occurrenceUFOFrequency: 3
+  _outUFOBoundsDepth: 10
   _shipPrefab: {fileID: -7380424836436983607, guid: 77f33ccc808c5534c8461044bdec2b24, type: 3}
   _maxShipSpeed: 7
   _deltaSpeed: 1.5

@@ -17,8 +17,7 @@ namespace Assets.Models
 
         protected override void CalculateDeltaMove()
         {
-            Vector3 deltaMoveVector = Vector3.MoveTowards(Position, _target.position, Speed * Time.deltaTime);
-            Position += deltaMoveVector;
+            Position = Vector3.MoveTowards(Position, _target.position, Speed * Time.deltaTime);
         }
 
         protected override void CalculateMoveSettings()
@@ -28,7 +27,8 @@ namespace Assets.Models
 
         protected override void TrySendCallback()
         {
-            base.TrySendCallback();
+            if (Extensions.IsPositionTooFar(Position, View, TooFarDistance))
+                OutFromBounds?.Invoke(this);
         }
     }
 }

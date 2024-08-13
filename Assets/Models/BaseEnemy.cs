@@ -7,6 +7,8 @@ namespace Assets.Models
 {
     public class BaseEnemy : Destroyable, IUpdatable
     {
+        public Action<BaseEnemy> OutFromBounds;
+        
         protected Vector3 Position;
         protected Vector3 MoveVector;
         protected float Speed;
@@ -14,7 +16,7 @@ namespace Assets.Models
         protected float MaxSpeed;
         protected float TooFarDistance;
         protected EnemyView View;
-        
+
         public BaseEnemy(float minSpeed, float maxSpeed, float tooFarDistance) 
         {
             MinSpeed = minSpeed;

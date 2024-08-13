@@ -7,7 +7,7 @@ namespace Assets.Models
 {
     public class Asteroid: BaseEnemy
     {
-        public event Action<Asteroid> OutFromBounds;
+       
 
         public Asteroid(float minSpeed, float maxSpeed, float tooFarDistance) : base(minSpeed, maxSpeed, tooFarDistance)
         {

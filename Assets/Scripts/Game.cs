@@ -20,6 +20,14 @@ namespace Assets.Scripts
         [SerializeField] private float _occurrenceFrequency;
         [SerializeField] private float _outBoundsDepth;
 
+        [Header("UFO Settings")]
+        [SerializeField] private UFOView _ufoPrefab;
+        [SerializeField] private int _maxUFOCount;
+        [SerializeField] private float _minUFOSpeed;
+        [SerializeField] private float _maxUFOSpeed;
+        [SerializeField] private float _occurrenceUFOFrequency;
+        [SerializeField] private float _outUFOBoundsDepth;
+
         [Header("Ship Settings")]
         [SerializeField] private ShipView _shipPrefab;
         [SerializeField] private float _maxShipSpeed;
@@ -58,7 +66,7 @@ namespace Assets.Scripts
             _updatable.Remove(updatable);
         }
 
-        private void CreateShip()
+        private ShipView CreateShip()
         {
             ShipView shipView = Instantiate(_shipPrefab, new Vector3(ScreenBounds.x / 2, ScreenBounds.y / 2), Quaternion.identity, transform);
             ShipFire shipFire = new ShipFire(shipView, _bulletPrefab, _laserPrefab,_laserFireCount, _laserReloadTime, _laserLifeTime, _bulletSpeed, _bulletReloadTime);
@@ -67,6 +75,8 @@ namespace Assets.Scripts
 
             _updatable.Add(shipFire);
             _fixedUpdatable.Add(ship);
+
+            return shipView;
         }
 
         private void Awake()
@@ -74,13 +84,19 @@ namespace Assets.Scripts
             _instance = FindObjectOfType<Game>();
             _inputSystem = new InputSystem();
             ScreenBounds = new Vector2(Camera.main.aspect * Camera.main.orthographicSize, Camera.main.orthographicSize);
-            CreateShip();
-            AsteroidsFactory asteroidsFactory = new AsteroidsFactory(_maxCount, _minSpeed, _maxSpeed,
+            ShipView ufoTarget = CreateShip();
+            
+            EnemyFactory<Asteroid,AsteroidView> asteroidsFactory = new EnemyFactory<Asteroid,AsteroidView>(null,_maxCount, _minSpeed, _maxSpeed,
                 _asteroidPrefab, _occurrenceFrequency, _outBoundsDepth);
             asteroidsFactory.Initialize();
+            _updatable.Add(asteroidsFactory);
+
+            EnemyFactory<UFO, UFOView> ufoFactory = new EnemyFactory<UFO, UFOView>(ufoTarget.transform,_maxUFOCount,
+                _minUFOSpeed,_maxUFOSpeed,_ufoPrefab,_occurrenceUFOFrequency,_outUFOBoundsDepth);
+            ufoFactory.Initialize();
+            _updatable.Add(ufoFactory);
 
             _updatable.Add(_inputSystem);
-            _updatable.Add(asteroidsFactory);
         }
 
         private void Start()
