@@ -1,10 +1,12 @@
 ﻿using Assets.Infrastructure;
+using Assets.Scripts;
 using Assets.Views;
+using System;
 using UnityEngine;
 
 namespace Assets.Models
 {
-    public class Ship : IFixedUpdatable
+    public class Ship : IFixedUpdatable, IStartable
     {
         private ShipView _view;
         private InputSystem _input;
@@ -16,6 +18,11 @@ namespace Assets.Models
         private float _rotateDirection;
         private bool _isMoveing = false;
         private bool _isRotating = false;
+
+
+        public event Action<float> SpeedChanged;
+        public event Action<Vector3> RotationChanged;
+        public event Action<Vector3> PositionChanged;
 
         public Ship(float maxSpeed, float deltaSpeed, float rotationSpeed, InputSystem inputSystem, ShipFire shipFire)
         {
@@ -41,6 +48,13 @@ namespace Assets.Models
             }
         }
 
+        public void Start()
+        {
+            PositionChanged?.Invoke(_view.transform.position);
+            SpeedChanged?.Invoke(_view.RigidBody.velocity.magnitude);
+            RotationChanged?.Invoke(_view.RigidBody.rotation.eulerAngles);
+        }
+
         public void FixedUpdate()
         {
             if (_isMoveing)
@@ -54,6 +68,9 @@ namespace Assets.Models
                 Rotate();
                 _isRotating = false;
             }
+
+            PositionChanged?.Invoke(_view.transform.position);
+            SpeedChanged?.Invoke(_view.RigidBody.velocity.magnitude);
         }
 
         public void Initilize(ShipView shipView)
@@ -83,6 +100,8 @@ namespace Assets.Models
             lastRotation += deltaRotation;
 
             _view.RigidBody.rotation = Quaternion.Euler(lastRotation);
+
+            RotationChanged?.Invoke(_view.RigidBody.rotation.eulerAngles);
         }
     }
 }

@@ -14,7 +14,9 @@ namespace Assets.Views
         [SerializeField] private Transform _bulletSpawn;
 
         private Ship _model;
-        
+
+        public event Action GameOver;
+
         public Vector3 FirePosition => _bulletSpawn.position;
         public Rigidbody RigidBody { get; private set;}
 
@@ -26,7 +28,7 @@ namespace Assets.Views
 
         public void Impact(Destroyable enemy)
         {
-            Debug.Log("Im explose");
+            GameOver?.Invoke();
         }
     }
 }

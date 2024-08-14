@@ -3,7 +3,9 @@ using Assets.Models;
 using Assets.Views;
 using System;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts
 {
@@ -43,6 +45,8 @@ namespace Assets.Scripts
         [SerializeField] private float _bulletSpeed;
         [SerializeField] private float _bulletReloadTime;
 
+        [SerializeField] private CanvasEvents _canvasEvents;
+
         private List<IStartable> _startable = new List<IStartable>();
         private List<IUpdatable> _updatable = new List<IUpdatable>();
         private List<IFixedUpdatable> _fixedUpdatable = new List<IFixedUpdatable>();
@@ -73,8 +77,17 @@ namespace Assets.Scripts
             Ship ship = new Ship(_maxShipSpeed, _deltaSpeed, _rotationSpeed,_inputSystem,shipFire);
             ship.Initilize(shipView);
 
+            _startable.Add(ship);
+            _startable.Add(shipFire);
             _updatable.Add(shipFire);
             _fixedUpdatable.Add(ship);
+
+            ship.PositionChanged += _canvasEvents.OnPositionChanged;
+            ship.RotationChanged += _canvasEvents.OnRotationChanged;
+            ship.SpeedChanged += _canvasEvents.OnSpeedChanged;
+            shipFire.LaserCountChanged += _canvasEvents.OnLaserCountChanged;
+            shipFire.LaserReloadTimeChanged += _canvasEvents.OnLaserReloadTimeChanged;
+            shipView.GameOver += _canvasEvents.OnGameOver;
 
             return shipView;
         }
@@ -97,6 +110,8 @@ namespace Assets.Scripts
             _updatable.Add(ufoFactory);
 
             _updatable.Add(_inputSystem);
+
+            _canvasEvents.AddListenerToRestartButton(ReloadGame);
         }
 
         private void Start()
@@ -121,6 +136,11 @@ namespace Assets.Scripts
             {
                 _fixedUpdatable[i].FixedUpdate();
             }
+        }
+
+        private void ReloadGame()
+        {
+            SceneManager.LoadScene(0, LoadSceneMode.Single);
         }
     }
 }
