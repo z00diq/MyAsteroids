@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 442fbe0705d3dd94f98f753a1d6ca9f4, type: 3}
+  m_Name: UFO Config
+  m_EditorClassIdentifier: 
+  _prefab: {fileID: 4666242290698186375, guid: 25294646f6dd8894a958731d66e34f1a, type: 3}
+  _maxCount: 2
+  _minSpeed: 2.5
+  _maxSpeed: 4
+  _occurrenceFrequency: 5
+  _outBoundsDepth: 10
