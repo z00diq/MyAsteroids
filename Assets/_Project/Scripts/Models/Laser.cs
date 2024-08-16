@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts;
-using Assets.Views;
 using System;
 using UnityEngine;
 

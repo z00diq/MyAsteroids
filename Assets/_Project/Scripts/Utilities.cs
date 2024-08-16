@@ -1,7 +1,5 @@
 ﻿using Assets.Scripts;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Assets
 {

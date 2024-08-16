@@ -1,9 +1,7 @@
 ﻿using Assets.Infrastructure;
 using Assets.Scripts;
-using Assets.Views;
 using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Assets.Models
 {
@@ -118,13 +116,13 @@ namespace Assets.Models
            
             Vector3 absPosition = new Vector3();
 
-            absPosition.x = Mathf.Abs(_rigidBody.transform.position.x) + _modelSize.x;
-            absPosition.y = Mathf.Abs(_rigidBody.transform.position.y) + _modelSize.y;
+            absPosition.x = Mathf.Abs(_rigidBody.transform.position.x);
+            absPosition.y = Mathf.Abs(_rigidBody.transform.position.y);
 
-            if (absPosition.x > Game.Instance.ScreenBounds.x)
+            if (absPosition.x > Game.Instance.ScreenBounds.x + _modelSize.x)
                 newPosition.x = -_rigidBody.transform.position.x;
         
-            if(absPosition.y > Game.Instance.ScreenBounds.y)
+            if(absPosition.y > Game.Instance.ScreenBounds.y + _modelSize.y)
                 newPosition.y = -_rigidBody.transform.position.y;
 
             if (newPosition != _rigidBody.transform.position)

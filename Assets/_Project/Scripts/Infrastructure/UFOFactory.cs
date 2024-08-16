@@ -1,6 +1,4 @@
-﻿using Assets;
-using Assets.Infrastructure;
-using Assets.Models;
+﻿using Assets.Models;
 using Assets.Scripts;
 using Assets.Views;
 using UnityEngine;

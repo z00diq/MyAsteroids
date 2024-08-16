@@ -13,7 +13,6 @@ namespace Assets.Models
             _target = target;
         }
 
-
         public override void SetPosition(Vector3 position)
         {
             base.SetPosition(position);

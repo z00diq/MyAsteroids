@@ -1,10 +1,7 @@
 ﻿using Assets.Models;
 using Assets.Scripts;
-using Assets.Views;
-using System;
 using UnityEngine;
 using UnityEngine.Pool;
-using static UnityEngine.GraphicsBuffer;
 
 namespace Assets.Infrastructure
 {
