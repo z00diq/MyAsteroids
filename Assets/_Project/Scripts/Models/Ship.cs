@@ -122,16 +122,13 @@ namespace Assets.Models
             absPosition.y = Mathf.Abs(_rigidBody.transform.position.y) + _modelSize.y;
 
             if (absPosition.x > Game.Instance.ScreenBounds.x)
-            {
                 newPosition.x = -_rigidBody.transform.position.x;
-                return true;
-            }
-
+        
             if(absPosition.y > Game.Instance.ScreenBounds.y)
-            {
                 newPosition.y = -_rigidBody.transform.position.y;
+
+            if (newPosition != _rigidBody.transform.position)
                 return true;
-            }
 
             return false;
         }

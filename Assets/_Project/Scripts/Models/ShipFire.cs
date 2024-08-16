@@ -9,37 +9,30 @@ namespace Assets.Models
     public class ShipFire : IUpdatable, IStartable
     {
         private ObjectPool<Bullet> _bullets;
-        private ShipView _view;
-        private BulletView _bulletViewpPrefab;
-        private LaserView _laserViewPrefab;
+        private BulletsFireConfigure _bulletsConfiguration;
+        private LaserFireConfigure _laserConfiguration;
+        private GameLoop _gameLoop;
         private Laser _activeLaser;
 
-        private int _laserFireMaxCount;
-        private float _laserReloadTime;
-        private float _laserLifeTime;
-        private float _bulletSpeed;
-        private float _bulletRealoadTime;
-        private float _laserEllapsedTime;
-        private float _bulletEllapsedTime;
+        private FireConfig _fireConfig;
+        
         private int _laserFireCount;
         private bool _readyToFire = true;
+        private float _laserEllapsedTime;
+        private float _bulletEllapsedTime;
 
         public event Action<int> LaserCountChanged;
         public event Action<float> LaserReloadTimeChanged;
 
-        public ShipFire(ShipView view, BulletView bulletViewpPrefab, LaserView laserViewprefab,int laserFireCount, float laserReloadTime, float laserLifeTime, float bulletSpeed, float bulletRealoadTime)
+        public ShipFire(FireConfig fireConfig, BulletsFireConfigure bulletsConfiguration, LaserFireConfigure laserConfiguration, GameLoop gameLoop)
         {
-            _view = view;
-            _bulletViewpPrefab = bulletViewpPrefab;
-            _laserFireMaxCount = laserFireCount;
-            _laserFireCount = laserFireCount;
-            _laserReloadTime = laserReloadTime;
-            _laserLifeTime = laserLifeTime;
-            _bulletSpeed = bulletSpeed;
-            _bulletRealoadTime = bulletRealoadTime;
+            _fireConfig = fireConfig;
+            _laserConfiguration = laserConfiguration;
+            _bulletsConfiguration = bulletsConfiguration;
+            _laserFireCount = laserConfiguration.FireMaxCount;
             _bullets = new ObjectPool<Bullet>(CreateBullet, OnTakeFromPool, OnReturnedToPool);
-            _laserViewPrefab = laserViewprefab;
-            _activeLaser = new Laser(_laserViewPrefab, _view, _laserLifeTime);
+            _gameLoop = gameLoop;
+            _activeLaser = new Laser(_laserConfiguration.Prefab as LaserView, _fireConfig, _laserConfiguration.LifeTime, _gameLoop);
         }
 
         public void FireBullet()
@@ -72,17 +65,17 @@ namespace Assets.Models
         {
             _bulletEllapsedTime += Time.deltaTime;
 
-            if (_bulletEllapsedTime >= _bulletRealoadTime)
+            if (_bulletEllapsedTime >= _bulletsConfiguration.ReloadTime)
             {
                 _readyToFire = true;
                 _bulletEllapsedTime = 0;
             }
 
-            if (_laserFireCount < _laserFireMaxCount)
+            if (_laserFireCount < _laserConfiguration.FireMaxCount)
             {
                 _laserEllapsedTime += Time.deltaTime;
 
-                if (_laserEllapsedTime >= _laserReloadTime)
+                if (_laserEllapsedTime >= _laserConfiguration.ReloadTime)
                 {
                     _laserFireCount++;
                     LaserCountChanged?.Invoke(_laserFireCount);
@@ -95,26 +88,25 @@ namespace Assets.Models
 
         private Bullet CreateBullet()
         {
-            Bullet bullet = new Bullet(_bulletSpeed);
-            BulletView bulletView = BulletView.Instantiate(_bulletViewpPrefab, _view.FirePosition, _view.transform.rotation, null);
-            bullet.Initialize(bulletView);
+            BulletView bulletView = UnityEngine.Object.Instantiate(_bulletsConfiguration.Prefab as BulletView, _fireConfig.FirePosition, _fireConfig.Transform.rotation);
+            Bullet bullet = new Bullet(_bulletsConfiguration.Speed,bulletView.transform,bulletView.Size);
+            bulletView.Initialize(bullet);
             bullet.OutFromBounds += _bullets.Release;
             return bullet;
         }
 
         private void OnTakeFromPool(Bullet bullet)
         {
-
-            bullet.SetPosition(_view.FirePosition);
-            bullet.ViewGameObject.transform.rotation = _view.transform.rotation;
-            bullet.ViewGameObject.SetActive(true);
-            Game.Instance.AddToUpdatable(bullet);
+            bullet.SetPosition(_fireConfig.FirePosition);
+            bullet.SetRotation(_fireConfig.Transform.rotation);
+            bullet.SetActive(true);
+            _gameLoop.AddToUpdatable(bullet);
         }
 
         private void OnReturnedToPool(Bullet bullet)
         {
-            Game.Instance.RemoveFromUpdatable(bullet);
-            bullet.ViewGameObject.SetActive(false);
+            _gameLoop.RemoveFromUpdatable(bullet);
+            bullet.SetActive(false);
         }
     }
 }

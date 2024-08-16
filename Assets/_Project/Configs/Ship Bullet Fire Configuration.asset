@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05cb22aaafbffd046ba172cb7b5493f5, type: 3}
-  m_Name: Ship Config
+  m_Script: {fileID: 11500000, guid: 9f704d551ca4eec428c4f15cfdc6722a, type: 3}
+  m_Name: Ship Bullet Fire Configuration
   m_EditorClassIdentifier: 
-  _prefab: {fileID: -7380424836436983607, guid: 77f33ccc808c5534c8461044bdec2b24, type: 3}
-  _maxSpeed: 5
-  _deltaSpeed: 0.7
-  _rotationSpeed: 100
+  _prefab: {fileID: 2859312198483025152, guid: cded078cf80754f4482fb1e3cfed1cd6, type: 3}
+  _reloadTime: 2
+  _speed: 10

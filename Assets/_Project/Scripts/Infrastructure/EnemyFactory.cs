@@ -10,13 +10,15 @@ namespace Assets.Infrastructure
 {
     public abstract class Factory<T> : IUpdatable where T:BaseEnemy
     {
+        private float _ellapsedTime = 0f;
+        protected GameLoop GameLoop;
         protected readonly EnemyConfiguration Configuration;
         protected ObjectPool<T> Enemies;
-        private float _ellapsedTime = 0f;
 
-        public Factory(EnemyConfiguration configuration)
+        public Factory(EnemyConfiguration configuration, GameLoop gameLoop)
         {
             Configuration = configuration;
+            GameLoop = gameLoop;
         }
 
         public void Initialize()
@@ -41,7 +43,7 @@ namespace Assets.Infrastructure
         protected void OnTakeFromPool(T enemy)
         {
             enemy.Enable();
-            Game.Instance.AddToUpdatable(enemy);
+            GameLoop.AddToUpdatable(enemy);
         }
 
         protected void OnOutFromBounds(BaseEnemy enemy)
@@ -53,13 +55,13 @@ namespace Assets.Infrastructure
         {
             Vector3 newPosition = Utilities.CalculatePositionOutsideBounds(Configuration.OutBoundsDepth);
             enemy.SetPosition(newPosition);
-            Game.Instance.RemoveFromUpdatable(enemy);
+            GameLoop.RemoveFromUpdatable(enemy);
             enemy.Disable();
         }
 
         protected void OnDestroyEnemy(T enemy)
         {
-            Game.Instance.RemoveFromUpdatable(enemy);
+            GameLoop.RemoveFromUpdatable(enemy);
             enemy.OutFromBounds -= OnOutFromBounds;
             enemy.Died -= Enemies.Dispose;
         }

@@ -7,10 +7,10 @@ namespace Assets.Models
 {
     public class Asteroid: BaseEnemy
     {
-        public event Action<Asteroid> Die;
+        public event Action<Asteroid> Splited;
 
-        public Asteroid(AsteroidConfiguration asteroidConfiguration, AsteroidView view) : 
-            base(asteroidConfiguration, view)
+        public Asteroid(AsteroidConfiguration asteroidConfiguration, AsteroidView view, GameLoop gameLoop) : 
+            base(asteroidConfiguration, view, gameLoop)
         {
         }
 
@@ -20,12 +20,12 @@ namespace Assets.Models
             base.SetPosition(position);
         }
 
-        public override void TakeDamage(GunShot gunShot)
+        public override void TakeDamage(DamageType damageType)
         {
-            if(gunShot is Bullet)
-                Die?.Invoke(this);
+            if(damageType==DamageType.Bullet)
+                Splited?.Invoke(this);
 
-            base.TakeDamage(gunShot);
+            base.TakeDamage(damageType);
         }
 
         public override void CalculateMoveSettings()

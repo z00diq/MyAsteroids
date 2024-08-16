@@ -1,4 +1,5 @@
-﻿using Assets.Views;
+﻿using Assets.Scripts;
+using Assets.Views;
 using UnityEngine;
 
 namespace Assets.Models
@@ -7,7 +8,7 @@ namespace Assets.Models
     {
         private Transform _target;
 
-        public UFO(UFOConfiguration configuration, UFOView view, Transform target) : base(configuration, view)
+        public UFO(UFOConfiguration configuration, UFOView view, Transform target, GameLoop gameLoop) : base(configuration, view, gameLoop)
         {
             _target = target;
         }

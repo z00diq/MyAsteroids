@@ -4,17 +4,25 @@ using UnityEngine;
 
 namespace Assets.Views
 {
-    public class BulletView : BaseView<Bullet>
+    public class BulletView : BaseView<Bullet>, IGunShot
     {
+        public DamageType DamageType => DamageType.Bullet;
+
         public override void Initialize(Bullet bullet)
         {
             base.Initialize(bullet);
-            bullet.PositionChanged += PositionChanged;
+
+            Model.Enabled += Enabled;
         }
 
-        private void PositionChanged(Vector3 position)
+        private void Enabled(bool isActive)
         {
-            transform.position = position;
+            gameObject.SetActive(isActive);
+        }
+
+        private void OnDestroy()
+        {
+            Model.Enabled -= Enabled;
         }
     }
 }

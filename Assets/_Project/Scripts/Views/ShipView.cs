@@ -18,7 +18,7 @@ namespace Assets.Views
         private void OnTriggerEnter(Collider other)
         {
             if(other.gameObject.TryGetComponent(out EnemyView view)) 
-                RenderSize.LetsDie();
+                Model.LetsDie();
         }
     }
 }

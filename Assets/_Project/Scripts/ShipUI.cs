@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    public class CanvasEvents: MonoBehaviour
+    public class ShipUI: MonoBehaviour
     {
         [SerializeField] private GameObject _gameOverPanel;
         [SerializeField] private GameObject _InfoPanel;

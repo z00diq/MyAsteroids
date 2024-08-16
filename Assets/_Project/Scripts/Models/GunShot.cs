@@ -1,7 +1,13 @@
 ﻿namespace Assets.Models
 {
-    public abstract class GunShot
+    public interface IGunShot
     {
+        public DamageType DamageType { get; }
+    }
 
+    public enum DamageType
+    {
+        Bullet,
+        Laser
     }
 }

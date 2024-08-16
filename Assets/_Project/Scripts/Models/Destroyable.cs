@@ -4,7 +4,7 @@ namespace Assets.Models
 {
     public abstract class Destroyable
     {
-        public abstract void TakeDamage(GunShot gunShot);
+        public abstract void TakeDamage(DamageType damageType);
         
     }
 }

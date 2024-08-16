@@ -5,22 +5,24 @@ using UnityEngine;
 
 namespace Assets.Models
 {
-    public class Laser:  IUpdatable
+    public class Laser: IUpdatable
     {
         public bool IsFiering = false;
 
         private LaserView _view;
+        private GameLoop _gameLoop;
         private float _laserLifeTime;
         private float _ellapsedTime = 0f;
 
         public event Action<Laser> Died;
 
-        public Laser(LaserView prefab, ShipView shipView,float laserLifeTime)
+        public Laser(LaserView prefab, FireConfig fireConfig, float laserLifeTime, GameLoop gameLoop)
         {
-            _view = LaserView.Instantiate(prefab, shipView.FirePosition, Quaternion.identity, shipView.transform);
+            _view = LaserView.Instantiate(prefab, fireConfig.FirePosition, Quaternion.identity, fireConfig.Transform);
             _view.gameObject.SetActive(false);
             _view.Initialize(this);
             this._laserLifeTime = laserLifeTime;
+            _gameLoop = gameLoop;
         }
 
         public void Update()
@@ -39,8 +41,8 @@ namespace Assets.Models
         {
             IsFiering = true;
             _view.gameObject.SetActive(true);
-            Game.Instance.AddToUpdatable(this);
-            Died += Game.Instance.RemoveFromUpdatable;
+            _gameLoop.AddToUpdatable(this);
+            Died += _gameLoop.RemoveFromUpdatable;
         }
     }
 }

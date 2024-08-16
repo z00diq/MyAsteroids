@@ -5,10 +5,11 @@ using Random=UnityEngine.Random;
 
 namespace Assets.Models
 {
-    public class BaseEnemy : Destroyable, IUpdatable
+    public class BaseEnemy : Destroyable, IUpdatable, IDisposable
     {
         public Action<BaseEnemy> OutFromBounds;
 
+        protected GameLoop GameLoop;
         protected Transform Transform;
         protected Vector2 ModelSize;
         protected Vector3 MoveVector;
@@ -17,13 +18,18 @@ namespace Assets.Models
         protected float MaxSpeed;
         protected float TooFarDistance;
 
-        public BaseEnemy(EnemyConfiguration configuration, EnemyView view)
+        public Vector3 Position => Transform.position;
+
+        public BaseEnemy(EnemyConfiguration configuration, EnemyView view, GameLoop gameLoop)
         {
             Transform = view.transform;
-            ModelSize = view.ModelSize;
+            ModelSize = view.Size;
             MinSpeed = configuration.MinSpeed;
             MaxSpeed = configuration.MaxSpeed;
             TooFarDistance = configuration.OutBoundsDepth;
+            GameLoop = gameLoop;
+
+            Died += Dispose;
         }
 
         public event Action<Vector3> Moved;
@@ -46,7 +52,13 @@ namespace Assets.Models
             DisableGameObject?.Invoke();
         }
 
-        public override void TakeDamage(GunShot gunShot)
+        public void Dispose()
+        {
+            GameLoop.RemoveFromUpdatable(this);
+            Died -= Dispose;
+        }
+
+        public override void TakeDamage(DamageType damageType)
         {
             Died?.Invoke();
         }
@@ -56,10 +68,9 @@ namespace Assets.Models
             Moved?.Invoke(Transform.position);
         }
 
-        public void TriggerDetected(Collider collider)
+        public void TriggerDetected(DamageType damageType)
         {
-            if (collider.TryGetComponent(out BaseView<GunShot> gunShotView))
-                TakeDamage(gunShotView.RenderSize);
+            TakeDamage(damageType);
         }
 
         public virtual void CalculateMoveSettings()

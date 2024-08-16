@@ -1164,16 +1164,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _asteroidsConfig: {fileID: 11400000, guid: 63a542f681456934b80d4baa5bf54755, type: 2}
+  _smallAsteroidConfig: {fileID: 11400000, guid: 5f2db85943c206a44baf21a0b6b56eba, type: 2}
   _ufoConfig: {fileID: 11400000, guid: ff25e47843944974cb1d4c03c2353435, type: 2}
   _shipConfig: {fileID: 11400000, guid: 1c20cf195dfdd96458aed089d24c6431, type: 2}
-  _bulletPrefab: {fileID: 2859312198483025152, guid: cded078cf80754f4482fb1e3cfed1cd6, type: 3}
-  _laserPrefab: {fileID: 8634360429072778552, guid: 95eebf3d7ba756847b469f8b93cc769b, type: 3}
-  _laserFireCount: 3
-  _laserReloadTime: 10
-  _laserLifeTime: 2
-  _bulletSpeed: 15
-  _bulletReloadTime: 2
-  _canvasEvents: {fileID: 2076904330}
+  _laserConfig: {fileID: 11400000, guid: 2e27ca798fd5abc41a41f843bbfac6cb, type: 2}
+  _bulletsConfig: {fileID: 11400000, guid: 7523c40988e66284fae8a256d691048f, type: 2}
+  _shipUI: {fileID: 2076904330}
 --- !u!4 &1279675302
 Transform:
   m_ObjectHideFlags: 0

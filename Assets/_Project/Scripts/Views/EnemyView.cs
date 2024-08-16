@@ -7,41 +7,41 @@ public class EnemyView : BaseView<BaseEnemy>
     public override void Initialize(BaseEnemy model)
     {
         base.Initialize(model);
-        RenderSize.Moved += Moved;
-        RenderSize.Died += OnDie;
-        RenderSize.EnableGameObject += OnEnable;
-        RenderSize.DisableGameObject += OnDisable;
+        Model.Moved += Moved;
+        Model.Died += OnDie;
+        Model.EnableGameObject += OnEnable;
+        Model.DisableGameObject += OnDisable;
         
     }
 
     private void OnEnable()
     {
-        if (RenderSize == null)
+        if (Model == null)
             return;
 
-        RenderSize.Moved += Moved;
-        RenderSize.Died += OnDie;
+        Model.Moved += Moved;
+        Model.Died += OnDie;
 
     }
 
     private void OnDisable()
     {
-        if (RenderSize == null)
+        if (Model == null)
             return;
 
-        RenderSize.Moved -= Moved;
-        RenderSize.Died -= OnDie;
+        Model.Moved -= Moved;
+        Model.Died -= OnDie;
     }
 
     private void OnDestroy()
     {
-        if (RenderSize == null)
+        if (Model == null)
             return;
 
-        RenderSize.EnableGameObject -= OnEnable;
-        RenderSize.DisableGameObject -= OnDisable;
-        RenderSize.Moved -= Moved;
-        RenderSize.Died -= OnDie;
+        Model.EnableGameObject -= OnEnable;
+        Model.DisableGameObject -= OnDisable;
+        Model.Moved -= Moved;
+        Model.Died -= OnDie;
     }
 
     private void OnDie()
@@ -56,6 +56,7 @@ public class EnemyView : BaseView<BaseEnemy>
 
     private void OnTriggerEnter(Collider other)
     {
-        RenderSize.TriggerDetected(other);
+        if(other.TryGetComponent(out IGunShot gunShot))
+            Model.TriggerDetected(gunShot.DamageType);
     }
 }
