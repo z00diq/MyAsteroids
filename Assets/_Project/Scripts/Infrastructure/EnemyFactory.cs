@@ -1,30 +1,32 @@
-﻿using Assets.Models;
-using Assets.Scripts;
+﻿using Assets.Configurations;
+using Assets.Models;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Pool;
+using Zenject;
 
 namespace Assets.Infrastructure
 {
-    public abstract class Factory<T> : IUpdatable where T:BaseEnemy
+    public abstract class Factory<T> : IInitializable,ITickable where T:BaseEnemy
     {
-        private float _ellapsedTime = 0f;
-        protected GameLoop GameLoop;
-        protected readonly EnemyConfiguration Configuration;
+        protected readonly DiContainer Container;
+        protected readonly EnemyConfig Configuration;
         protected ObjectPool<T> Enemies;
+        private float _ellapsedTime = 0f;
 
-        public Factory(EnemyConfiguration configuration, GameLoop gameLoop)
+        protected Factory(DiContainer container, EnemyConfig configuration)
         {
+            Container = container;
             Configuration = configuration;
-            GameLoop = gameLoop;
         }
 
-        public void Initialize()
+        void IInitializable.Initialize()
         {
             Enemies = new ObjectPool<T>(CreateEnemy, OnTakeFromPool, OnReturnedToPool,
                 OnDestroyEnemy, true, Configuration.MaxCount, Configuration.MaxCount);
         }
 
-        public void Update()
+        void ITickable.Tick()
         {
             _ellapsedTime += Time.deltaTime;
 
@@ -35,32 +37,32 @@ namespace Assets.Infrastructure
             }
         }
 
-        public abstract T CreateEnemy();
+        protected abstract T CreateEnemy();
     
-        protected void OnTakeFromPool(T enemy)
+        private void OnTakeFromPool(T enemy)
         {
             enemy.Enable();
-            GameLoop.AddToUpdatable(enemy);
+            Container.Resolve<TickableManager>().Add(enemy);
         }
 
         protected void OnOutFromBounds(BaseEnemy enemy)
         {
             Enemies.Release(enemy as T);
         }
-
-        protected void OnReturnedToPool(T enemy)
+        protected void OnDestroyEnemy(BaseEnemy enemy)
         {
+            Container.Resolve<TickableManager>().Remove(enemy);
+            enemy.OutFromBounds -= OnOutFromBounds;
+            enemy.Died -= OnDestroyEnemy;
+        }
+
+        private void OnReturnedToPool(T enemy)
+        {
+            Container.Resolve<TickableManager>().Remove(enemy);
             Vector3 newPosition = Utilities.CalculatePositionOutsideBounds(Configuration.OutBoundsDepth);
             enemy.SetPosition(newPosition);
-            GameLoop.RemoveFromUpdatable(enemy);
             enemy.Disable();
         }
 
-        protected void OnDestroyEnemy(T enemy)
-        {
-            GameLoop.RemoveFromUpdatable(enemy);
-            enemy.OutFromBounds -= OnOutFromBounds;
-            enemy.Died -= Enemies.Dispose;
-        }
     }
 }

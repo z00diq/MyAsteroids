@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fc02bc2c1b5c44bb16856183378a0a, type: 3}
+  m_Name: Config (Main Game Settings)
+  m_EditorClassIdentifier: Assembly-CSharp:Assets._Project.Scripts.Installers:GameMainInstaller
+  _asteroidsConfig: {fileID: 11400000, guid: 63a542f681456934b80d4baa5bf54755, type: 2}
+  _smallAsteroidConfig: {fileID: 11400000, guid: 5f2db85943c206a44baf21a0b6b56eba, type: 2}
+  _ufoConfig: {fileID: 11400000, guid: ff25e47843944974cb1d4c03c2353435, type: 2}
+  _shipConfig: {fileID: 11400000, guid: 1c20cf195dfdd96458aed089d24c6431, type: 2}
+  _laserConfig: {fileID: 11400000, guid: 2e27ca798fd5abc41a41f843bbfac6cb, type: 2}
+  _bulletsConfig: {fileID: 11400000, guid: 7523c40988e66284fae8a256d691048f, type: 2}

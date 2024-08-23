@@ -1,47 +1,42 @@
-﻿using Assets.Scripts;
+﻿using Assets.Infrastructure;
+using Assets.Views;
 using System;
 using UnityEngine;
+using Zenject;
 
 namespace Assets.Models
 {
-    public class Laser: IUpdatable
+    public class Laser: ITickable
     {
         public bool IsFiering = false;
 
-        private LaserView _view;
-        private GameLoop _gameLoop;
-        private float _laserLifeTime;
+        private readonly float _laserLifeTime;
         private float _ellapsedTime = 0f;
 
-        public event Action<Laser> Died;
+        public event Action StartFiering;
+        public event Action EndFireing;
 
-        public Laser(LaserView prefab, FireConfig fireConfig, float laserLifeTime, GameLoop gameLoop)
+        public Laser(float laserLifeTime)
         {
-            _view = LaserView.Instantiate(prefab, fireConfig.FirePosition, Quaternion.identity, fireConfig.Transform);
-            _view.gameObject.SetActive(false);
-            _view.Initialize(this);
-            this._laserLifeTime = laserLifeTime;
-            _gameLoop = gameLoop;
+            _laserLifeTime = laserLifeTime;
         }
 
-        public void Update()
+        public void Fire()
+        {
+            IsFiering = true;
+            StartFiering?.Invoke();
+        }
+
+        void ITickable.Tick()
         {
             _ellapsedTime += Time.deltaTime;
 
-            if(_ellapsedTime >= _laserLifeTime)
+            if (_ellapsedTime >= _laserLifeTime)
             {
                 _ellapsedTime = 0;
                 IsFiering = false;
-                Died?.Invoke(this);
+                EndFireing?.Invoke();
             }
-        }
-
-        internal void Fire()
-        {
-            IsFiering = true;
-            _view.gameObject.SetActive(true);
-            _gameLoop.AddToUpdatable(this);
-            Died += _gameLoop.RemoveFromUpdatable;
         }
     }
 }

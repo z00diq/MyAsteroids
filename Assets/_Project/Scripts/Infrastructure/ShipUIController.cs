@@ -1,23 +1,32 @@
 ﻿using Assets.Models;
+using Assets.Scripts;
+using System;
+using Zenject;
 
-namespace Assets.Scripts
+namespace Assets.Infrastructure
 {
-    public class ShipUIController : IStartable
+    public class ShipUIController : IInitializable, IDisposable
     {
-        private Ship _ship;
-        private ShipFire _shipFire;
-        private ShipUI _shipUI;
+        private readonly Ship _ship;
+        private readonly LaserFireController _laserFire;
+        private readonly ShipUI _shipUI;
 
-        public ShipUIController(Ship ship, ShipFire shipFire, ShipUI shipUI)
+        public ShipUIController(Ship ship, LaserFireController laserFire, ShipUI shipUI)
         {
             _ship = ship;
-            _shipFire = shipFire;
+            _laserFire = laserFire;
             _shipUI = shipUI;
         }
 
-        public void Start()
+        [Inject]
+        public void Initialize()
         {
             Bind();
+        }
+
+        void IDisposable.Dispose()
+        {
+            Unbind();
         }
 
         private void Bind()
@@ -26,8 +35,8 @@ namespace Assets.Scripts
             _ship.RotationChanged += _shipUI.OnRotationChanged;
             _ship.SpeedChanged += _shipUI.OnSpeedChanged;
             _ship.Die += _shipUI.OnGameOver;
-            _shipFire.LaserCountChanged += _shipUI.OnLaserCountChanged;
-            _shipFire.LaserReloadTimeChanged += _shipUI.OnLaserReloadTimeChanged;
+            _laserFire.LaserCountChanged += _shipUI.OnLaserCountChanged;
+            _laserFire.LaserReloadTimeChanged += _shipUI.OnLaserReloadTimeChanged;
         }
 
         private void Unbind()
@@ -36,8 +45,8 @@ namespace Assets.Scripts
             _ship.RotationChanged -= _shipUI.OnRotationChanged;
             _ship.SpeedChanged -= _shipUI.OnSpeedChanged;
             _ship.Die -= _shipUI.OnGameOver;
-            _shipFire.LaserCountChanged -= _shipUI.OnLaserCountChanged;
-            _shipFire.LaserReloadTimeChanged -= _shipUI.OnLaserReloadTimeChanged;
+            _laserFire.LaserCountChanged -= _shipUI.OnLaserCountChanged;
+            _laserFire.LaserReloadTimeChanged -= _shipUI.OnLaserReloadTimeChanged;
         }
     }
 }

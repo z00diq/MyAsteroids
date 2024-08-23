@@ -1,4 +1,5 @@
-﻿using Assets.Scripts;
+﻿using Assets.Configurations;
+using Assets.Views;
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -9,8 +10,8 @@ namespace Assets.Models
     {
         public event Action<Asteroid> Splited;
 
-        public Asteroid(AsteroidConfiguration asteroidConfiguration, AsteroidView view, GameLoop gameLoop) : 
-            base(asteroidConfiguration, view, gameLoop)
+        public Asteroid(AsteroidConfig asteroidConfiguration, AsteroidView view) : 
+            base(asteroidConfiguration, view)
         {
         }
 
@@ -30,15 +31,15 @@ namespace Assets.Models
 
         public override void CalculateMoveSettings()
         {
-            Vector3 target = new Vector3(Game.Instance.ScreenBounds.x / 2, Game.Instance.ScreenBounds.y / 2);
-            Vector3 direction = (target - Transform.position).normalized;
+            Vector3 target = new Vector3(Utilities.ScreenBounds.x / 2, Utilities.ScreenBounds.y / 2);
+            Vector3 direction = (target - Position).normalized;
             Speed = Random.Range(MinSpeed, MaxSpeed);
             MoveVector = direction * Speed;
         }
 
         protected override void IsAsteroidTooFar()
         {
-            if (Utilities.IsPositionTooFar(Transform.position, ModelSize, TooFarDistance))
+            if (Utilities.IsPositionTooFar(Position, ModelSize, TooFarDistance))
                 OutFromBounds?.Invoke(this);
         }
     }

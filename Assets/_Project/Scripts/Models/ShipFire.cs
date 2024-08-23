@@ -1,112 +1,45 @@
-﻿using Assets.Scripts;
-using Assets.Views;
-using System;
-using UnityEngine;
-using UnityEngine.Pool;
+﻿using System;
+using Zenject;
 
 namespace Assets.Models
 {
-    public class ShipFire : IUpdatable, IStartable
+    public class ShipFire : IInitializable, IDisposable
     {
-        private ObjectPool<Bullet> _bullets;
-        private BulletsFireConfigure _bulletsConfiguration;
-        private LaserFireConfigure _laserConfiguration;
-        private GameLoop _gameLoop;
-        private Laser _activeLaser;
-
-        private FireConfig _fireConfig;
+        private readonly BulletSpawner _bulletSpawner;
+        private readonly LaserFireController _laserSpawner;
         
         private int _laserFireCount;
-        private bool _readyToFire = true;
         private float _laserEllapsedTime;
-        private float _bulletEllapsedTime;
 
-        public event Action<int> LaserCountChanged;
-        public event Action<float> LaserReloadTimeChanged;
+        public event Action FireBullet;
+        public event Action FireLaser;
 
-        public ShipFire(FireConfig fireConfig, BulletsFireConfigure bulletsConfiguration, LaserFireConfigure laserConfiguration, GameLoop gameLoop)
+        public ShipFire(BulletSpawner bulletSpawner, LaserFireController laserSpawner)
         {
-            _fireConfig = fireConfig;
-            _laserConfiguration = laserConfiguration;
-            _bulletsConfiguration = bulletsConfiguration;
-            _laserFireCount = laserConfiguration.FireMaxCount;
-            _bullets = new ObjectPool<Bullet>(CreateBullet, OnTakeFromPool, OnReturnedToPool);
-            _gameLoop = gameLoop;
-            _activeLaser = new Laser(_laserConfiguration.Prefab as LaserView, _fireConfig, _laserConfiguration.LifeTime, _gameLoop);
+            _bulletSpawner = bulletSpawner;
+            _laserSpawner = laserSpawner;     
         }
 
-        public void FireBullet()
+        public void BulletFire()
         {
-            if (_readyToFire == false)
-                return;
-
-            _bullets.Get();
-
-            _readyToFire = false;
+            FireBullet?.Invoke();
         }
 
         public void LaserFire()
         {
-            if (_laserFireCount == 0 || _activeLaser.IsFiering)
-                return;
-
-            _activeLaser.Fire();
-            _laserFireCount--;
-            LaserCountChanged?.Invoke(_laserFireCount);
+            FireLaser?.Invoke();
         }
 
-        public void Start()
+        void IInitializable.Initialize()
         {
-            LaserCountChanged?.Invoke(_laserFireCount);
-            LaserReloadTimeChanged?.Invoke(_laserEllapsedTime);
+            FireLaser += _laserSpawner.Fire;
+            FireBullet += _bulletSpawner.Spawn;
         }
 
-        public void Update()
+        void IDisposable.Dispose()
         {
-            _bulletEllapsedTime += Time.deltaTime;
-
-            if (_bulletEllapsedTime >= _bulletsConfiguration.ReloadTime)
-            {
-                _readyToFire = true;
-                _bulletEllapsedTime = 0;
-            }
-
-            if (_laserFireCount < _laserConfiguration.FireMaxCount)
-            {
-                _laserEllapsedTime += Time.deltaTime;
-
-                if (_laserEllapsedTime >= _laserConfiguration.ReloadTime)
-                {
-                    _laserFireCount++;
-                    LaserCountChanged?.Invoke(_laserFireCount);
-                    _laserEllapsedTime = 0;
-                }
-
-                LaserReloadTimeChanged?.Invoke(_laserEllapsedTime);
-            }
-        }
-
-        private Bullet CreateBullet()
-        {
-            BulletView bulletView = UnityEngine.Object.Instantiate(_bulletsConfiguration.Prefab as BulletView, _fireConfig.FirePosition, _fireConfig.Transform.rotation);
-            Bullet bullet = new Bullet(_bulletsConfiguration.Speed,bulletView.transform,bulletView.Size);
-            bulletView.Initialize(bullet);
-            bullet.OutFromBounds += _bullets.Release;
-            return bullet;
-        }
-
-        private void OnTakeFromPool(Bullet bullet)
-        {
-            bullet.SetPosition(_fireConfig.FirePosition);
-            bullet.SetRotation(_fireConfig.Transform.rotation);
-            bullet.SetActive(true);
-            _gameLoop.AddToUpdatable(bullet);
-        }
-
-        private void OnReturnedToPool(Bullet bullet)
-        {
-            _gameLoop.RemoveFromUpdatable(bullet);
-            bullet.SetActive(false);
+            FireBullet -= _bulletSpawner.Spawn;
+            FireLaser -= _laserSpawner.Fire;
         }
     }
 }

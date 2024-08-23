@@ -1,43 +1,43 @@
-﻿using Assets.Scripts;
+﻿using Assets.Configurations;
+using Assets.Views;
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Zenject;
 using Random=UnityEngine.Random;
 
 namespace Assets.Models
 {
-    public class BaseEnemy : Destroyable, IUpdatable, IDisposable
+    public class BaseEnemy : Destroyable, ITickable
     {
         public Action<BaseEnemy> OutFromBounds;
 
-        protected GameLoop GameLoop;
-        protected Transform Transform;
-        protected Vector2 ModelSize;
+        protected readonly Vector2 ModelSize;
+        protected readonly float MinSpeed;
+        protected readonly float MaxSpeed;
+        protected readonly float TooFarDistance;
         protected Vector3 MoveVector;
         protected float Speed;
-        protected float MinSpeed;
-        protected float MaxSpeed;
-        protected float TooFarDistance;
 
-        public Vector3 Position => Transform.position;
+        public Vector3 Position { get; protected set; }
 
-        public BaseEnemy(EnemyConfiguration configuration, EnemyView view, GameLoop gameLoop)
+        public BaseEnemy(EnemyConfig configuration, EnemyView view)
         {
-            Transform = view.transform;
+            Position = view.transform.position;
             ModelSize = view.Size;
             MinSpeed = configuration.MinSpeed;
             MaxSpeed = configuration.MaxSpeed;
             TooFarDistance = configuration.OutBoundsDepth;
-            GameLoop = gameLoop;
 
-            Died += Dispose;
+            Died += OnDie;
         }
 
         public event Action<Vector3> Moved;
-        public event Action Died;
+        public event Action<BaseEnemy> Died;
         public event Action EnableGameObject;
         public event Action DisableGameObject;
 
-        public void Update()
+        void ITickable.Tick()
         {
             Move();
         }
@@ -52,20 +52,16 @@ namespace Assets.Models
             DisableGameObject?.Invoke();
         }
 
-        public void Dispose()
-        {
-            GameLoop.RemoveFromUpdatable(this);
-            Died -= Dispose;
-        }
+    
 
         public override void TakeDamage(DamageType damageType)
         {
-            Died?.Invoke();
+            Died?.Invoke(this);
         }
 
         public virtual void SetPosition(Vector3 position)
         {
-            Moved?.Invoke(Transform.position);
+            Moved?.Invoke(position);
         }
 
         public void TriggerDetected(DamageType damageType)
@@ -85,21 +81,26 @@ namespace Assets.Models
 
         protected virtual void IsAsteroidTooFar()
         {
-            if(Utilities.IsPositionTooFar(Transform.position, ModelSize, TooFarDistance))
-                Died?.Invoke();
+            if(Utilities.IsPositionTooFar(Position, ModelSize, TooFarDistance))
+                Died?.Invoke(this);
         }
 
         protected virtual void CalculateDeltaMove()
         {
             Vector3 deltaMoveVector = MoveVector * Time.deltaTime;
-            Transform.position += deltaMoveVector;
+            Position += deltaMoveVector;
         }
 
         private void Move()
         {
             CalculateDeltaMove();
-            Moved?.Invoke(Transform.position);
+            Moved?.Invoke(Position);
             IsAsteroidTooFar();
+        }
+
+        public void OnDie(BaseEnemy baseEnemy)
+        {
+            Died -= OnDie;
         }
     }
 }

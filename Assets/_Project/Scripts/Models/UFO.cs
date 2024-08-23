@@ -1,4 +1,4 @@
-﻿using Assets.Scripts;
+﻿using Assets.Configurations;
 using Assets.Views;
 using UnityEngine;
 
@@ -6,9 +6,9 @@ namespace Assets.Models
 {
     internal class UFO : BaseEnemy
     {
-        private Transform _target;
+        private readonly Transform _target;
 
-        public UFO(UFOConfiguration configuration, UFOView view, Transform target, GameLoop gameLoop) : base(configuration, view, gameLoop)
+        public UFO(UFOConfig configuration, UFOView view, Transform target) : base(configuration, view)
         {
             _target = target;
         }
@@ -20,7 +20,7 @@ namespace Assets.Models
 
         protected override void CalculateDeltaMove()
         {
-            Transform.position = Vector3.MoveTowards(Transform.position, _target.position, Speed * Time.deltaTime);
+            Position = Vector3.MoveTowards(Position, _target.position, Speed * Time.deltaTime);
         }
 
         public override void CalculateMoveSettings()
@@ -30,7 +30,7 @@ namespace Assets.Models
 
         protected override void IsAsteroidTooFar()
         {
-            if (Utilities.IsPositionTooFar(Transform.position, ModelSize, TooFarDistance))
+            if (Utilities.IsPositionTooFar(Position, ModelSize, TooFarDistance))
                 OutFromBounds?.Invoke(this);
         }
     }

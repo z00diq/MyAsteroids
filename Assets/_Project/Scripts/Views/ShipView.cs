@@ -9,7 +9,6 @@ namespace Assets.Views
         [SerializeField] private Transform _bulletSpawn;
         public Vector3 FirePosition => _bulletSpawn.position;
 
-
         private void OnTriggerEnter(Collider other)
         {
             if(other.gameObject.TryGetComponent(out EnemyView view)) 

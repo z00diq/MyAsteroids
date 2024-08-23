@@ -1,7 +1,10 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Renderer))]
-public class AsteroidView : EnemyView
+namespace Assets.Views
 {
+    [RequireComponent(typeof(Renderer))]
+    public class AsteroidView : EnemyView
+    {
    
+    }
 }

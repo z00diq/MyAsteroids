@@ -1,10 +1,10 @@
 ﻿using Assets.Models;
-using Assets.Scripts;
 using UnityEngine;
+using Zenject;
 
 namespace Assets.Infrastructure
 {
-    public class ShipKeyboardController : IUpdatable
+    public class ShipKeyboardController : ITickable
     {
         private const string Horizontal = nameof(Horizontal);
         private const string Vertical = nameof(Vertical);
@@ -12,8 +12,8 @@ namespace Assets.Infrastructure
         private const KeyCode fireButton = KeyCode.F;
         private const KeyCode altFireButton = KeyCode.G;
 
-        private Ship _ship;
-        private ShipFire _shipFire;
+        private readonly Ship _ship;
+        private readonly ShipFire _shipFire;
         private Vector2 _inputData = Vector2.zero;
 
         public ShipKeyboardController(Ship ship, ShipFire shipFire)
@@ -22,19 +22,15 @@ namespace Assets.Infrastructure
             _shipFire = shipFire;
         }
 
-        public void Update()
+        void ITickable.Tick()
         {
             _inputData.x = Input.GetAxisRaw(Horizontal);
             _inputData.y = Input.GetAxisRaw(Vertical);
 
-            if (_inputData.y > 0)
-                _ship.LetsMove();
-
-            if (_inputData.x != 0)
-                _ship.LetsRotate(_inputData.x);
+            _ship.SetInput(_inputData);
 
             if (Input.GetKey(fireButton))
-                _shipFire.FireBullet();
+                _shipFire.BulletFire();
 
             if (Input.GetKey(altFireButton))
                 _shipFire.LaserFire();

@@ -1,44 +1,48 @@
-﻿using Assets;
-using Assets.Infrastructure;
+﻿using Assets.Configurations;
 using Assets.Models;
-using Assets.Scripts;
+using Assets.Views;
+using System.ComponentModel;
 using UnityEngine;
+using Zenject;
 
-public partial class AsteroidFactory : Factory<Asteroid>
+namespace Assets.Infrastructure
 {
-    private readonly ParticleAsteroidConfiguration _smallAsteroidConfig;
-    public AsteroidFactory(AsteroidConfiguration configuration, ParticleAsteroidConfiguration smallAsteroidConfig, GameLoop gameLoop) 
-        : base(configuration, gameLoop)
+    public partial class AsteroidFactory : Factory<Asteroid>
     {
-        _smallAsteroidConfig = smallAsteroidConfig;
-    }
-
-    public override Asteroid CreateEnemy()
-    {
-        Vector3 spawnPosition = Utilities.CalculatePositionOutsideBounds(Configuration.OutBoundsDepth);
-
-        AsteroidView asteroidView = Object.Instantiate(Configuration.Prefab, spawnPosition, Quaternion.identity, Game.Instance.gameObject.transform) as AsteroidView;
-        Asteroid enemy = new Asteroid(Configuration as AsteroidConfiguration, asteroidView, GameLoop);
-        asteroidView.Initialize(enemy);
-        enemy.CalculateMoveSettings();
-        enemy.OutFromBounds += OnOutFromBounds;
-        enemy.Died += Enemies.Dispose;
-        enemy.Splited += CreateParticles;
-
-        return enemy;
-    }
-
-    private void CreateParticles(Asteroid asteroid)
-    {
-        for (int i = 0; i < _smallAsteroidConfig.SpawnCount; i++)
+        private readonly ParticleAsteroidConfig _smallAsteroidConfig;
+        public AsteroidFactory(DiContainer container, AsteroidConfig configuration, ParticleAsteroidConfig smallAsteroidConfig)
+            : base(container,configuration)
         {
-            EnemyView enemyView = Object.Instantiate(_smallAsteroidConfig.Prefab, asteroid.Position, Quaternion.identity);
-            enemyView.gameObject.transform.localScale *= 0.3f;
-            BaseEnemy baseEnemy = new BaseEnemy(_smallAsteroidConfig, enemyView,GameLoop);
-            baseEnemy.CalculateMoveSettings();
-            enemyView.Initialize(baseEnemy);
-            GameLoop.AddToUpdatable(baseEnemy);
-            asteroid.Splited -= CreateParticles;
+            _smallAsteroidConfig = smallAsteroidConfig;
+        }
+
+        protected override Asteroid CreateEnemy()
+        {
+            Vector3 spawnPosition = Utilities.CalculatePositionOutsideBounds(Configuration.OutBoundsDepth);
+
+            AsteroidView asteroidView = Object.Instantiate(Configuration.Prefab, spawnPosition, Quaternion.identity) as AsteroidView;
+            Asteroid enemy = new Asteroid(Configuration as AsteroidConfig, asteroidView);
+            asteroidView.Initialize(enemy);
+            enemy.CalculateMoveSettings();
+            enemy.OutFromBounds += OnOutFromBounds;
+            enemy.Died += OnDestroyEnemy;
+            enemy.Splited += CreateParticles;
+
+            return enemy;
+        }
+
+        private void CreateParticles(Asteroid asteroid)
+        {
+            for (int i = 0; i < _smallAsteroidConfig.SpawnCount; i++)
+            {
+                EnemyView enemyView = Object.Instantiate(_smallAsteroidConfig.Prefab, asteroid.Position, Quaternion.identity);
+                enemyView.gameObject.transform.localScale *= 0.3f;
+                BaseEnemy baseEnemy = new BaseEnemy(_smallAsteroidConfig, enemyView);
+                baseEnemy.CalculateMoveSettings();
+                enemyView.Initialize(baseEnemy);
+                Container.Resolve<TickableManager>().Add(baseEnemy);
+                asteroid.Splited -= CreateParticles;
+            }
         }
     }
 }

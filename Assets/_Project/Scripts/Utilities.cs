@@ -1,17 +1,23 @@
-﻿using Assets.Scripts;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets
 {
-    public static class Utilities
+    public class Utilities
     {
+        public static Vector2 ScreenBounds;
+
+        public Utilities(Vector2 screenBounds)
+        {
+            ScreenBounds = screenBounds;
+        }
+
         public static bool IsPositionTooFar(Vector3 position, Vector2 size, float tooFarDistance=0f)
         {
             Vector3 absPosition = new Vector3();
             Vector3 absOutBounds = new Vector3();
 
-            absOutBounds.x = Game.Instance.ScreenBounds.x + tooFarDistance;
-            absOutBounds.y = Game.Instance.ScreenBounds.y + tooFarDistance;
+            absOutBounds.x = ScreenBounds.x + tooFarDistance;
+            absOutBounds.y = ScreenBounds.y + tooFarDistance;
 
             absPosition.x = Mathf.Abs(position.x) + size.x;
             absPosition.y = Mathf.Abs(position.y) + size.y;
@@ -26,11 +32,11 @@ namespace Assets
         public static Vector3 CalculatePositionOutsideBounds(float outBoundsDepth)
         {
             Vector3 newPosition;
-        
-            float negativeAsterodPositionY = Random.Range(-Game.Instance.ScreenBounds.y - outBoundsDepth, -Game.Instance.ScreenBounds.y);
-            float positiveAsterodPositionY = Random.Range(Game.Instance.ScreenBounds.y , Game.Instance.ScreenBounds.y + outBoundsDepth);
-            float negativeAsterodPositionX = Random.Range(-Game.Instance.ScreenBounds.x - outBoundsDepth, -Game.Instance.ScreenBounds.x);
-            float positiveAsterodPositionX = Random.Range(Game.Instance.ScreenBounds.x, -Game.Instance.ScreenBounds.x + outBoundsDepth);
+
+            float negativeAsterodPositionY = Random.Range(-ScreenBounds.y - outBoundsDepth, -ScreenBounds.y);
+            float positiveAsterodPositionY = Random.Range(ScreenBounds.y, ScreenBounds.y + outBoundsDepth);
+            float negativeAsterodPositionX = Random.Range(-ScreenBounds.x - outBoundsDepth, -ScreenBounds.x);
+            float positiveAsterodPositionX = Random.Range(ScreenBounds.x, -ScreenBounds.x + outBoundsDepth);
 
             float randomDirection = Random.Range(1f, 100f);
 

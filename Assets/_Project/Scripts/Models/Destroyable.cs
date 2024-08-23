@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Assets.Models
+﻿namespace Assets.Models
 {
     public abstract class Destroyable
     {

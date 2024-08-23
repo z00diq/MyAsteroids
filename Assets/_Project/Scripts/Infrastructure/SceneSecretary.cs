@@ -1,13 +1,13 @@
 ﻿using UnityEngine.SceneManagement;
 
-namespace Assets.Scripts
+namespace Assets.Infrastructure
 {
     public class SceneSecretary
     {
-        private const int MainSceneIndex = 0;
+        private const int MAIN_SCENE_INDEX = 0;
         public void ReloadSceneAsSingle()
         {
-            SceneManager.LoadScene(MainSceneIndex, LoadSceneMode.Single);
+            SceneManager.LoadScene(MAIN_SCENE_INDEX, LoadSceneMode.Single);
         }
     }
 }

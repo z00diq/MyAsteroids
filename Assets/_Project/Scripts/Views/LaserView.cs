@@ -1,4 +1,7 @@
-﻿namespace Assets.Models
+﻿using Assets.Models;
+using System;
+
+namespace Assets.Views
 {
     public class LaserView : BaseView<Laser>, IGunShot
     {
@@ -7,12 +10,24 @@
         public override void Initialize(Laser model)
         {
             base.Initialize(model);
-            Model.Died += Die;
+            Model.StartFiering += Active;
+            Model.EndFireing += Unactive;
+
         }
 
-        private void Die(Laser laser)
+        private void Active()
+        {
+            gameObject.SetActive(true);
+        }
+
+        private void Unactive()
         {
             gameObject.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            Model.EndFireing -= Unactive;
         }
     }
 }

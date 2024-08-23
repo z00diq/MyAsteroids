@@ -1,29 +1,28 @@
-﻿using Assets.Models;
-using Assets.Scripts;
+﻿using Assets.Configurations;
+using Assets.Models;
 using Assets.Views;
 using UnityEngine;
+using Zenject;
 
 namespace Assets.Infrastructure
 {
     class UFOFactory : Factory<UFO>
     {
-        private Transform _target;
-
-        public UFOFactory(UFOConfiguration configuration, Transform target, GameLoop gameLoop) : base(configuration, gameLoop)
+        public UFOFactory(DiContainer container, UFOConfig configuration) : base(container, configuration)
         {
-            _target = target;
         }
 
-        public override UFO CreateEnemy()
+        protected override UFO CreateEnemy()
         {
             Vector3 spawnPosition = Utilities.CalculatePositionOutsideBounds(Configuration.OutBoundsDepth);
 
-            EnemyView enemyView = Object.Instantiate(Configuration.Prefab, spawnPosition, Quaternion.identity, Game.Instance.gameObject.transform);
-            UFO enemy = new UFO(Configuration as UFOConfiguration, enemyView as UFOView , _target, GameLoop);
+            EnemyView enemyView = Object.Instantiate(Configuration.Prefab, spawnPosition, Quaternion.identity);
+            Transform target = Container.Resolve<ShipView>().transform;
+            UFO enemy = new UFO(Configuration as UFOConfig, enemyView as UFOView , target);
             enemyView.Initialize(enemy);
             enemy.CalculateMoveSettings();
             enemy.OutFromBounds += OnOutFromBounds;
-            enemy.Died += Enemies.Dispose;
+            enemy.Died += OnDestroyEnemy;
             return enemy;
         }
     }

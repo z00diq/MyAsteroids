@@ -1,62 +1,65 @@
 ﻿using Assets.Models;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
-public class EnemyView : BaseView<BaseEnemy>
+namespace Assets.Views
 {
-    public override void Initialize(BaseEnemy model)
+    [RequireComponent(typeof(Collider))]
+    public class EnemyView : BaseView<BaseEnemy>
     {
-        base.Initialize(model);
-        Model.Moved += Moved;
-        Model.Died += OnDie;
-        Model.EnableGameObject += OnEnable;
-        Model.DisableGameObject += OnDisable;
-        
-    }
+        public override void Initialize(BaseEnemy model)
+        {
+            base.Initialize(model);
+            Model.Moved += Moved;
+            Model.Died += OnDie;
+            Model.EnableGameObject += OnEnable;
+            Model.DisableGameObject += OnDisable;
 
-    private void OnEnable()
-    {
-        if (Model == null)
-            return;
+        }
 
-        Model.Moved += Moved;
-        Model.Died += OnDie;
+        private void OnEnable()
+        {
+            if (Model == null)
+                return;
 
-    }
+            Model.Moved += Moved;
+            Model.Died += OnDie;
 
-    private void OnDisable()
-    {
-        if (Model == null)
-            return;
+        }
 
-        Model.Moved -= Moved;
-        Model.Died -= OnDie;
-    }
+        private void OnDisable()
+        {
+            if (Model == null)
+                return;
 
-    private void OnDestroy()
-    {
-        if (Model == null)
-            return;
+            Model.Moved -= Moved;
+            Model.Died -= OnDie;
+        }
 
-        Model.EnableGameObject -= OnEnable;
-        Model.DisableGameObject -= OnDisable;
-        Model.Moved -= Moved;
-        Model.Died -= OnDie;
-    }
+        private void OnDestroy()
+        {
+            if (Model == null)
+                return;
 
-    private void OnDie()
-    {
-        Destroy(gameObject);
-    }
+            Model.EnableGameObject -= OnEnable;
+            Model.DisableGameObject -= OnDisable;
+            Model.Moved -= Moved;
+            Model.Died -= OnDie;
+        }
 
-    private void Moved(Vector3 obj)
-    {
-        transform.position = obj;
-    }
+        private void OnDie(BaseEnemy baseEnemy)
+        {
+            Destroy(gameObject);
+        }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.TryGetComponent(out IGunShot gunShot))
-            Model.TriggerDetected(gunShot.DamageType);
+        private void Moved(Vector3 obj)
+        {
+            transform.position = obj;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent(out IGunShot gunShot))
+                Model.TriggerDetected(gunShot.DamageType);
+        }
     }
 }

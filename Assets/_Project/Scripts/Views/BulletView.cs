@@ -1,6 +1,4 @@
 ﻿using Assets.Models;
-using System;
-using UnityEngine;
 
 namespace Assets.Views
 {

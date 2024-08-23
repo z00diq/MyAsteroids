@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 
-public class BaseView<T> : MonoBehaviour where T : class
+namespace Assets.Views
 {
-    public Vector2 Size { get; private set; }
-    public T Model { get; private set; }
-
-    private void Awake()
+    public class BaseView<T> : MonoBehaviour where T : class
     {
-        if (TryGetComponent(out Renderer renderer))
-            Size = new Vector2(renderer.bounds.size.x / 2, renderer.bounds.size.y / 2);
-    }
+        public Vector2 Size { get; private set; }
+        public T Model { get; private set; }
 
-    public virtual void Initialize(T model)
-    {
-        Model = model;
+        private void Awake()
+        {
+            if (TryGetComponent(out Renderer renderer))
+                Size = new Vector2(renderer.bounds.size.x / 2, renderer.bounds.size.y / 2);
+        }
+
+        public virtual void Initialize(T model)
+        {
+            Model = model;
+        }
     }
 }

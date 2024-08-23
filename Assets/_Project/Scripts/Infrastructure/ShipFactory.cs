@@ -1,49 +1,61 @@
-﻿using Assets.Models;
-using Assets.Scripts;
+﻿using Assets.Configurations;
+using Assets.Models;
 using Assets.Views;
 using UnityEngine;
+using Zenject;
 
-public class ShipFactory
+namespace Assets.Infrastructure
 {
-    private ShipConfigure _shipConfigure;
-    private BulletsFireConfigure _bulletsConfiguration;
-    private LaserFireConfigure _laserConfiguration;
-    private Vector3 _firePosition;
-    private GameLoop _gameLoop;
-
-    public Transform ShipTransform { get; private set; }
-    public Ship Ship { get; private set; }
-    public ShipFire ShipFire {get; private set;}
-
-
-    public ShipFactory(ShipConfigure shipConfigure, BulletsFireConfigure bulletsFireConfigure, LaserFireConfigure laserFireConfigure, GameLoop gameLoop)
+    public class ShipFactory : IFactory<Ship>, IFactory<ShipFire>
     {
-        _shipConfigure = shipConfigure;
-        _bulletsConfiguration = bulletsFireConfigure;
-        _laserConfiguration = laserFireConfigure;
-        _gameLoop = gameLoop;
+        private readonly DiContainer _container;
+        private readonly BulletsFireConfig _bulletsConfiguration;
+        private readonly LaserFireConfig _laserConfiguration;
+
+        public ShipFactory(DiContainer container, ShipConfig shipConfigure, BulletsFireConfig bulletsFireConfigure, LaserFireConfig laserFireConfigure)
+        {
+            _container = container;
+            _bulletsConfiguration = bulletsFireConfigure;
+            _laserConfiguration = laserFireConfigure;
+        }
+
+        Ship IFactory<Ship>.Create() 
+        {
+            ShipConfig shipConfig = _container.Resolve<ShipConfig>();
+            ShipView shipView = _container.Resolve<ShipView>();
+            Ship ship = new Ship(shipView.GetComponent<Rigidbody>(), shipView.Size, shipConfig);
+            shipView.Initialize(ship);
+
+            return ship;
+        }
+
+        ShipFire IFactory<ShipFire>.Create()
+        {
+            FireConfig config = _container.Resolve<FireConfig>();
+            BulletSpawner bulletSpawner = _container.Resolve<BulletSpawner>();
+            LaserFireController laserFire = _container.Resolve<LaserFireController>();
+            ShipFire shipFire = new ShipFire(bulletSpawner, laserFire);
+
+            return shipFire;
+        }
     }
 
-    public void CreateShip(Vector3 spawnPosition)
+    public class ShipViewFactory : IFactory<ShipView>
     {
-        ShipView shipView = Object.Instantiate(_shipConfigure.Prefab, spawnPosition, Quaternion.identity);
-        ShipTransform = shipView.transform;
-        FireConfig fireConfig = new FireConfig(shipView);
-        ShipFire = new ShipFire(fireConfig, _bulletsConfiguration, _laserConfiguration, _gameLoop);
-        Ship = new Ship(shipView.GetComponent<Rigidbody>(), shipView.Size, _shipConfigure);
-        shipView.Initialize(Ship);
+        private readonly ShipView _prefab;
+        private readonly Vector3 _spawnPosition;
+
+        public ShipViewFactory(
+            ShipView prefab, 
+            [Inject(Id ="Ship Spawn Position")]Vector3 spawnPosition)
+        {
+            _prefab = prefab;
+            _spawnPosition = spawnPosition;
+        }
+
+        ShipView IFactory<ShipView>.Create()
+        {
+            return Object.Instantiate(_prefab, _spawnPosition, Quaternion.identity);
+        }
     }
-}
-
-public class FireConfig
-{
-    private ShipView _shipView;
-    public FireConfig(ShipView view)
-    {
-        _shipView = view;
-    }
-
-    public Transform Transform => _shipView.transform;
-
-    public Vector3 FirePosition => _shipView.FirePosition;
 }

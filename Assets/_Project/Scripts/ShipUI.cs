@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using Assets.Infrastructure;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Assets.Scripts
 {
@@ -15,10 +17,21 @@ namespace Assets.Scripts
         [SerializeField] private Text _laserCountText;
         [SerializeField] private Text _laserReloadTimeText;
 
+        [Inject]
+        public void Construct(SceneSecretary sceneSecretary)
+        {
+            _restartButton.onClick.AddListener(sceneSecretary.ReloadSceneAsSingle);
+        }
+
         private void Awake()
         {
             _gameOverPanel.SetActive(false);
             _InfoPanel.SetActive(true);
+        }
+
+        private void OnDestroy()
+        {
+            _restartButton.onClick.RemoveAllListeners();
         }
 
         public void OnPositionChanged(Vector3 position)
@@ -51,11 +64,6 @@ namespace Assets.Scripts
         {
             _gameOverPanel.SetActive(true);
             _InfoPanel.SetActive(false);
-        }
-
-        public void AddListenerToRestartButton(UnityAction action)
-        {
-            _restartButton.onClick.AddListener(action);
         }
     }
 }
