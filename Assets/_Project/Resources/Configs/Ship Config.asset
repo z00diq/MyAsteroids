@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Ship Config
   m_EditorClassIdentifier: 
   _prefab: {fileID: -7380424836436983607, guid: 77f33ccc808c5534c8461044bdec2b24, type: 3}
-  _maxSpeed: 5
-  _deltaSpeed: 0.7
-  _rotationSpeed: 100
+  _maxSpeed: 0
+  _deltaSpeed: 0
+  _rotationSpeed: 0

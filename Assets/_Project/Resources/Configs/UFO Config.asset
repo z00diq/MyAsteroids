@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: UFO Config
   m_EditorClassIdentifier: 
   _prefab: {fileID: 4666242290698186375, guid: 25294646f6dd8894a958731d66e34f1a, type: 3}
-  _maxCount: 2
-  _minSpeed: 2.5
-  _maxSpeed: 4
-  _occurrenceFrequency: 5
+  _maxCount: 0
+  _minSpeed: 0
+  _maxSpeed: 0
+  _occurrenceFrequency: 0
   _outBoundsDepth: 10

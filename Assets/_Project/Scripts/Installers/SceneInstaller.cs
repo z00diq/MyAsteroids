@@ -51,9 +51,6 @@ namespace Assets.Installers
                 BindInterfacesAndSelfTo<ShipKeyboardController>().
                 AsSingle();
 
-            Container.Bind<SceneSecretary>().
-                AsSingle();
-
             Container.
                 BindInterfacesAndSelfTo<Ship>().
                 FromFactory<Ship, ShipFactory>().

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Laser Config
   m_EditorClassIdentifier: 
   _prefab: {fileID: 8634360429072778552, guid: 95eebf3d7ba756847b469f8b93cc769b, type: 3}
-  _reloadTime: 10
-  _lifeTime: 3
-  _fireMaxCount: 3
+  _reloadTime: 0
+  _lifeTime: 0
+  _fireMaxCount: 0

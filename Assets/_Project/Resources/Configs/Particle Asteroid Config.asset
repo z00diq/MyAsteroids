@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _prefab: {fileID: 119147805886447572, guid: 79c24bc61f3c42f4b9a93266d9911aa3, type: 3}
   _maxCount: 0
-  _minSpeed: 3
-  _maxSpeed: 3
+  _minSpeed: 0
+  _maxSpeed: 0
   _occurrenceFrequency: 0
   _outBoundsDepth: 0
-  _minSpawnCount: 3
-  _maxSpawnCount: 10
+  _minSpawnCount: 0
+  _maxSpawnCount: 0

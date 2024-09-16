@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Assets.Configurations
 {
-    public class BaseGunShotConfig<T> : ScriptableObject where T: class
+    public abstract class BaseGunShotConfig<T> : ScriptableObject where T: class
     {
         [SerializeField] private BaseView<T> _prefab;
         [SerializeField] private float _reloadTime;

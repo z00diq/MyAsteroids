@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Bullet Config
   m_EditorClassIdentifier: 
   _prefab: {fileID: 2859312198483025152, guid: cded078cf80754f4482fb1e3cfed1cd6, type: 3}
-  _reloadTime: 2
-  _speed: 10
+  _reloadTime: 0
+  _speed: 0

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "480057591192",
+    "project_id": "asteroids-68c5d",
+    "storage_bucket": "asteroids-68c5d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480057591192:android:e76c51a4c5d2d100ca97ed",
+        "android_client_info": {
+          "package_name": "com.MyCompany.Asterpoids_Test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtnYNDJTOo8Govg6OjQxhGsBbYRcVbxDU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

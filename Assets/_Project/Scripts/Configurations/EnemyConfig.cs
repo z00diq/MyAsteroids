@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Assets.Configurations
 {
-    public class EnemyConfig : ScriptableObject
+    public abstract class EnemyConfig : ScriptableObject
     {
         [SerializeField] EnemyView _prefab;
         [SerializeField] int _maxCount;

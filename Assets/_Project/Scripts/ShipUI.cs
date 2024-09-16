@@ -20,7 +20,7 @@ namespace Assets.Scripts
         [Inject]
         public void Construct(SceneSecretary sceneSecretary)
         {
-            _restartButton.onClick.AddListener(sceneSecretary.ReloadSceneAsSingle);
+            _restartButton.onClick.AddListener(sceneSecretary.ReloadMainSceneAsSingle);
         }
 
         private void Awake()
