@@ -10,8 +10,8 @@ namespace Assets.Infrastructure
     public partial class AsteroidFactory : Factory<Asteroid>
     {
         private readonly ParticleAsteroidConfig _smallAsteroidConfig;
-        public AsteroidFactory(DiContainer container, AsteroidConfig configuration, ParticleAsteroidConfig smallAsteroidConfig)
-            : base(container,configuration)
+        public AsteroidFactory(TickableManager tickable, AsteroidConfig configuration, ParticleAsteroidConfig smallAsteroidConfig)
+            : base(tickable, configuration)
         {
             _smallAsteroidConfig = smallAsteroidConfig;
         }
@@ -40,7 +40,7 @@ namespace Assets.Infrastructure
                 BaseEnemy baseEnemy = new BaseEnemy(_smallAsteroidConfig, enemyView);
                 baseEnemy.CalculateMoveSettings();
                 enemyView.Initialize(baseEnemy);
-                Container.Resolve<TickableManager>().Add(baseEnemy);
+                TickableManager.Add(baseEnemy);
                 asteroid.Splited -= CreateParticles;
             }
         }

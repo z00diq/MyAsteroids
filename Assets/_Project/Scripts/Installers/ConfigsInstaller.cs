@@ -6,7 +6,7 @@ using Zenject;
 namespace Assets.Installers
 {
     [CreateAssetMenu(menuName = "Configs/Mains/Game", fileName = "Config (Main Game Settings)")]
-    public sealed class GameMainInstaller : ScriptableObjectInstaller
+    public sealed class ConfigsInstaller : ScriptableObjectInstaller
     {
         [SerializeField] private AsteroidConfig _asteroidsConfig;
         [SerializeField] private ParticleAsteroidConfig _smallAsteroidConfig;

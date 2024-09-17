@@ -9,6 +9,7 @@ namespace Assets.Models
     public class Asteroid: BaseEnemy
     {
         public event Action<Asteroid> Splited;
+        public override event Action<BaseEnemy> OutFromBounds;
 
         public Asteroid(AsteroidConfig asteroidConfiguration, AsteroidView view) : 
             base(asteroidConfiguration, view)

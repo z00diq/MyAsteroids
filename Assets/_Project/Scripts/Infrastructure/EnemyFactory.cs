@@ -9,14 +9,14 @@ namespace Assets.Infrastructure
 {
     public abstract class Factory<T> : IInitializable,ITickable where T:BaseEnemy
     {
-        protected readonly DiContainer Container;
+        protected readonly TickableManager TickableManager;
         protected readonly EnemyConfig Configuration;
         protected ObjectPool<T> Enemies;
         private float _ellapsedTime = 0f;
 
-        protected Factory(DiContainer container, EnemyConfig configuration)
+        protected Factory(TickableManager tickableManager, EnemyConfig configuration)
         {
-            Container = container;
+            TickableManager = tickableManager;
             Configuration = configuration;
         }
 
@@ -42,27 +42,27 @@ namespace Assets.Infrastructure
         private void OnTakeFromPool(T enemy)
         {
             enemy.Enable();
-            Container.Resolve<TickableManager>().Add(enemy);
+            TickableManager.Add(enemy);
         }
 
         protected void OnOutFromBounds(BaseEnemy enemy)
         {
             Enemies.Release(enemy as T);
         }
+
         protected void OnDestroyEnemy(BaseEnemy enemy)
         {
-            Container.Resolve<TickableManager>().Remove(enemy);
+            TickableManager.Remove(enemy);
             enemy.OutFromBounds -= OnOutFromBounds;
             enemy.Died -= OnDestroyEnemy;
         }
 
         private void OnReturnedToPool(T enemy)
         {
-            Container.Resolve<TickableManager>().Remove(enemy);
+            TickableManager.Remove(enemy);
             Vector3 newPosition = Utilities.CalculatePositionOutsideBounds(Configuration.OutBoundsDepth);
             enemy.SetPosition(newPosition);
             enemy.Disable();
         }
-
     }
 }

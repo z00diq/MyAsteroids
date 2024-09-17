@@ -2,24 +2,19 @@
 using Assets.Views;
 using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Zenject;
 using Random=UnityEngine.Random;
 
 namespace Assets.Models
 {
-    public class BaseEnemy : Destroyable, ITickable
+    public class BaseEnemy : ITickable
     {
-        public Action<BaseEnemy> OutFromBounds;
-
         protected readonly Vector2 ModelSize;
         protected readonly float MinSpeed;
         protected readonly float MaxSpeed;
         protected readonly float TooFarDistance;
         protected Vector3 MoveVector;
         protected float Speed;
-
-        public Vector3 Position { get; protected set; }
 
         public BaseEnemy(EnemyConfig configuration, EnemyView view)
         {
@@ -32,10 +27,13 @@ namespace Assets.Models
             Died += OnDie;
         }
 
+        public virtual event Action<BaseEnemy> OutFromBounds;
         public event Action<Vector3> Moved;
         public event Action<BaseEnemy> Died;
         public event Action EnableGameObject;
         public event Action DisableGameObject;
+
+        public Vector3 Position { get; protected set; }
 
         void ITickable.Tick()
         {
@@ -52,9 +50,7 @@ namespace Assets.Models
             DisableGameObject?.Invoke();
         }
 
-    
-
-        public override void TakeDamage(DamageType damageType)
+        public virtual void TakeDamage(DamageType damageType)
         {
             Died?.Invoke(this);
         }

@@ -2,14 +2,9 @@
 
 namespace Assets
 {
-    public class Utilities
+    public static  class Utilities
     {
         public static Vector2 ScreenBounds;
-
-        public Utilities(Vector2 screenBounds)
-        {
-            ScreenBounds = screenBounds;
-        }
 
         public static bool IsPositionTooFar(Vector3 position, Vector2 size, float tooFarDistance=0f)
         {

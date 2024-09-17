@@ -19,7 +19,7 @@ namespace Assets.Infrastructure
         }
 
         [Inject]
-        public void Initialize()
+        void IInitializable.Initialize()
         {
             Bind();
         }

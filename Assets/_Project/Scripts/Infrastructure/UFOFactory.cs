@@ -8,8 +8,11 @@ namespace Assets.Infrastructure
 {
     class UFOFactory : Factory<UFO>
     {
-        public UFOFactory(DiContainer container, UFOConfig configuration) : base(container, configuration)
+        private ShipView _target;
+
+        public UFOFactory(TickableManager tickable, ShipView shipView,UFOConfig configuration) : base(tickable, configuration)
         {
+            _target = shipView;
         }
 
         protected override UFO CreateEnemy()
@@ -17,7 +20,7 @@ namespace Assets.Infrastructure
             Vector3 spawnPosition = Utilities.CalculatePositionOutsideBounds(Configuration.OutBoundsDepth);
 
             EnemyView enemyView = Object.Instantiate(Configuration.Prefab, spawnPosition, Quaternion.identity);
-            Transform target = Container.Resolve<ShipView>().transform;
+            Transform target = _target.transform;
             UFO enemy = new UFO(Configuration as UFOConfig, enemyView as UFOView , target);
             enemyView.Initialize(enemy);
             enemy.CalculateMoveSettings();

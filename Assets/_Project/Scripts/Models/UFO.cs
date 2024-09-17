@@ -4,8 +4,9 @@ using UnityEngine;
 
 namespace Assets.Models
 {
-    internal class UFO : BaseEnemy
+    public class UFO : BaseEnemy
     {
+        public override event System.Action<BaseEnemy> OutFromBounds;
         private readonly Transform _target;
 
         public UFO(UFOConfig configuration, UFOView view, Transform target) : base(configuration, view)
