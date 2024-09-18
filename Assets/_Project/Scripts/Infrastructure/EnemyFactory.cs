@@ -1,4 +1,5 @@
-﻿using Assets.Configurations;
+﻿using Assets._Project.Scripts.Remotes;
+using Assets.Configurations;
 using Assets.Models;
 using System.ComponentModel;
 using UnityEngine;
@@ -11,13 +12,15 @@ namespace Assets.Infrastructure
     {
         protected readonly TickableManager TickableManager;
         protected readonly EnemyConfig Configuration;
+        protected readonly RemoteAnalytics _analytics;
         protected ObjectPool<T> Enemies;
         private float _ellapsedTime = 0f;
 
-        protected Factory(TickableManager tickableManager, EnemyConfig configuration)
+        protected Factory(TickableManager tickableManager, EnemyConfig configuration, RemoteAnalytics analytics)
         {
             TickableManager = tickableManager;
             Configuration = configuration;
+            _analytics = analytics;
         }
 
         void IInitializable.Initialize()
@@ -55,6 +58,11 @@ namespace Assets.Infrastructure
             TickableManager.Remove(enemy);
             enemy.OutFromBounds -= OnOutFromBounds;
             enemy.Died -= OnDestroyEnemy;
+
+            if ((enemy is UFO) == true)
+                _analytics.IncreaseUfoDestroyedCount();
+            else
+                _analytics.IncreaseAsteroidsDestroyedCount();
         }
 
         private void OnReturnedToPool(T enemy)

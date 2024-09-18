@@ -1,4 +1,5 @@
-﻿using Assets.Configurations;
+﻿using Assets._Project.Scripts.Remotes;
+using Assets.Configurations;
 using Assets.Models;
 using Assets.Views;
 using System.ComponentModel;
@@ -10,8 +11,8 @@ namespace Assets.Infrastructure
     public partial class AsteroidFactory : Factory<Asteroid>
     {
         private readonly ParticleAsteroidConfig _smallAsteroidConfig;
-        public AsteroidFactory(TickableManager tickable, AsteroidConfig configuration, ParticleAsteroidConfig smallAsteroidConfig)
-            : base(tickable, configuration)
+        public AsteroidFactory(TickableManager tickable, AsteroidConfig configuration, ParticleAsteroidConfig smallAsteroidConfig, RemoteAnalytics analytics)
+            : base(tickable, configuration, analytics)
         {
             _smallAsteroidConfig = smallAsteroidConfig;
         }

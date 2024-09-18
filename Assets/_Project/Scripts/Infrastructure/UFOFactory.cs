@@ -1,4 +1,5 @@
-﻿using Assets.Configurations;
+﻿using Assets._Project.Scripts.Remotes;
+using Assets.Configurations;
 using Assets.Models;
 using Assets.Views;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Assets.Infrastructure
     {
         private ShipView _target;
 
-        public UFOFactory(TickableManager tickable, ShipView shipView,UFOConfig configuration) : base(tickable, configuration)
+        public UFOFactory(TickableManager tickable, ShipView shipView,UFOConfig configuration, RemoteAnalytics remoteAnalytics) : base(tickable, configuration, remoteAnalytics)
         {
             _target = shipView;
         }

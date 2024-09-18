@@ -1,6 +1,4 @@
-﻿using Assets.Infrastructure;
-using Assets.Views;
-using System;
+﻿using System;
 using UnityEngine;
 using Zenject;
 

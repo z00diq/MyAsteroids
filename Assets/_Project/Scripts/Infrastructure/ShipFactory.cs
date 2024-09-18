@@ -1,4 +1,5 @@
-﻿using Assets.Configurations;
+﻿using Assets._Project.Scripts.Remotes;
+using Assets.Configurations;
 using Assets.Models;
 using Assets.Views;
 using UnityEngine;
@@ -34,7 +35,8 @@ namespace Assets.Infrastructure
             FireConfig config = _container.Resolve<FireConfig>();
             BulletSpawner bulletSpawner = _container.Resolve<BulletSpawner>();
             LaserFireController laserFire = _container.Resolve<LaserFireController>();
-            ShipFire shipFire = new ShipFire(bulletSpawner, laserFire);
+            RemoteAnalytics remoteAnalytics = _container.Resolve<RemoteAnalytics>();
+            ShipFire shipFire = new ShipFire(bulletSpawner, laserFire, remoteAnalytics);
 
             return shipFire;
         }
