@@ -1,4 +1,5 @@
-﻿using Assets.Configurations;
+﻿using Assets._Project.Scripts.Ads;
+using Assets.Configurations;
 using System;
 using UnityEngine;
 using Zenject;
@@ -14,6 +15,7 @@ namespace Assets.Installers
         [SerializeField] private ShipConfig _shipConfig;
         [SerializeField] private LaserFireConfig _laserConfig;
         [SerializeField] private BulletsFireConfig _bulletsConfig;
+        [SerializeField] private AdsConfig _adsConfig;
 
         public override void InstallBindings()
         {
@@ -23,6 +25,7 @@ namespace Assets.Installers
             Container.Bind<ShipConfig>().FromInstance(_shipConfig).AsSingle();
             Container.Bind<LaserFireConfig>().FromInstance(_laserConfig).AsSingle();
             Container.Bind<BulletsFireConfig>().FromInstance(_bulletsConfig).AsSingle();
+            Container.Bind<AdsConfig>().FromInstance(_adsConfig).AsSingle();
         }
     }
 }

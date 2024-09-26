@@ -75,9 +75,14 @@ namespace Assets.Models
             MoveVector = direction * Speed;
         }
 
+        public void OnDie(BaseEnemy baseEnemy)
+        {
+            Died -= OnDie;
+        }
+
         protected virtual void IsAsteroidTooFar()
         {
-            if(Utilities.IsPositionTooFar(Position, ModelSize, TooFarDistance))
+            if (Utilities.IsPositionTooFar(Position, ModelSize, TooFarDistance))
                 Died?.Invoke(this);
         }
 
@@ -92,11 +97,6 @@ namespace Assets.Models
             CalculateDeltaMove();
             Moved?.Invoke(Position);
             IsAsteroidTooFar();
-        }
-
-        public void OnDie(BaseEnemy baseEnemy)
-        {
-            Died -= OnDie;
         }
     }
 }

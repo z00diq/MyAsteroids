@@ -18,3 +18,4 @@ MonoBehaviour:
   _shipConfig: {fileID: 11400000, guid: 1c20cf195dfdd96458aed089d24c6431, type: 2}
   _laserConfig: {fileID: 11400000, guid: 2e27ca798fd5abc41a41f843bbfac6cb, type: 2}
   _bulletsConfig: {fileID: 11400000, guid: 7523c40988e66284fae8a256d691048f, type: 2}
+  _adsConfig: {fileID: 11400000, guid: 4c89456a4e003d941b16b1046748847c, type: 2}

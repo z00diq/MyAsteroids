@@ -8,18 +8,21 @@ using Firebase.Extensions;
 using Firebase;
 using Firebase.Analytics;
 using UnityEngine.Analytics;
+using Assets._Project.Scripts.Ads;
 
 public class Bootstrap: IInitializable
 {
     private IRemoteConfig _remoteConfig;
     private SceneSecretary _sceneSecretary;
     private RemoteAnalytics _analytics;
+    private Ads _ads;
 
-    public Bootstrap(IRemoteConfig remoteConfig, SceneSecretary sceneSecretary, RemoteAnalytics analytics)
+    public Bootstrap(IRemoteConfig remoteConfig, SceneSecretary sceneSecretary, RemoteAnalytics analytics,Ads ads)
     {
         _remoteConfig = remoteConfig;
         _sceneSecretary = sceneSecretary;
         _analytics = analytics;
+        _ads=ads;
     }
 
     async void IInitializable.Initialize()
@@ -29,6 +32,9 @@ public class Bootstrap: IInitializable
             ContinueWith(task => _remoteConfig.LoadDataAsync(task)));
 
         await _analytics.InitializeAsync();
+
+        await _ads.InitializeAds();
+        await _ads.ShowInterstitial();
 
         _sceneSecretary.ToGamScene();
     }
