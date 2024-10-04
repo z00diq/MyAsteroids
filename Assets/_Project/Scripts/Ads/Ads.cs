@@ -28,6 +28,8 @@ namespace Assets._Project.Scripts.Ads
 
         public abstract Task ShowInterstitial();
 
+        public abstract void DisableAds();
+
         protected void GetReward()
         {
             SendReward?.Invoke();

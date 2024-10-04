@@ -8,7 +8,7 @@ namespace Assets._Project.Scripts.Ads
     public class UnityAds : Ads, IUnityAdsShowListener, IUnityAdsInitializationListener, IUnityAdsLoadListener
     {
         private bool _testMode;
-
+        private bool _isShowEnabled = true;
         TaskCompletionSource<bool> _initTask;
         TaskCompletionSource<bool> _showTask;
        
@@ -23,9 +23,17 @@ namespace Assets._Project.Scripts.Ads
             _showTask = new TaskCompletionSource<bool>();
         }
 
+        public override void DisableAds()
+        {
+            _isShowEnabled = false;
+        }
+
         public override async Task InitializeAds()
         {
-             Advertisement.Initialize(AppId,_testMode,this);
+            if (_isShowEnabled == false)
+                return;
+
+            Advertisement.Initialize(AppId,_testMode,this);
 
             await _initTask.Task;
         }
@@ -42,6 +50,9 @@ namespace Assets._Project.Scripts.Ads
 
         public async override Task ShowInterstitial()
         {
+            if (_isShowEnabled == false)
+                return;
+
             Advertisement.Show(InterstitialId, this);
 
             await _showTask.Task;
@@ -49,6 +60,9 @@ namespace Assets._Project.Scripts.Ads
 
         public override void ShowRewardedAds()
         {
+            if (_isShowEnabled == false)
+                return;
+
             Advertisement.Show(RewardId,this);
         }
 

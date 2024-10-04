@@ -1,4 +1,5 @@
 ﻿using Assets._Project.Scripts.Ads;
+using Assets._Project.Scripts.IAP;
 using Assets.Infrastructure;
 using System;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Assets.Scripts
         [SerializeField] private GameObject _InfoPanel;
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _rewardAdsButton;
+        [SerializeField] private Button _adsDisableButton;
         [SerializeField] private Text _cooridnatesText;
         [SerializeField] private Text _rotationText;
         [SerializeField] private Text _speedText;
@@ -21,14 +23,19 @@ namespace Assets.Scripts
         [SerializeField] private Text _laserReloadTimeText;
 
         private Ads _ads;
+        private IInAppPurchase _inAppPurchase;
 
         [Inject]
-        public void Construct(SceneSecretary sceneSecretary,Ads ads)
+        public void Construct(SceneSecretary sceneSecretary,Ads ads, IInAppPurchase iap)
         {
             _ads = ads;
+            _inAppPurchase = iap;
             _restartButton.onClick.AddListener(sceneSecretary.ToGamScene);
             _rewardAdsButton.onClick.AddListener(ads.ShowRewardedAds);
+            _adsDisableButton.onClick.AddListener(_inAppPurchase.BuyAdsOff);
             _ads.SendReward += ToGame;
+            _inAppPurchase.PurchaseComplite += DisableAdsButton;
+            _inAppPurchase.PurchaseComplite += ToGame;
         }
 
         private void Awake()
@@ -41,7 +48,12 @@ namespace Assets.Scripts
         {
             _restartButton.onClick.RemoveAllListeners();
             _rewardAdsButton.onClick.RemoveAllListeners();
+            _adsDisableButton.onClick.RemoveAllListeners();
+
             _ads.SendReward -= ToGame;
+            _inAppPurchase.PurchaseComplite -= DisableAdsButton;
+            _inAppPurchase.PurchaseComplite -= ToGame;
+
         }
 
         public void OnPositionChanged(Vector3 position)
@@ -80,6 +92,12 @@ namespace Assets.Scripts
         {
             _gameOverPanel.SetActive(false);
             _InfoPanel.SetActive(true);
+        }
+
+        private void DisableAdsButton()
+        {
+            _rewardAdsButton.gameObject.SetActive(false);
+            _adsDisableButton.gameObject.SetActive(false);
         }
     }
 }
